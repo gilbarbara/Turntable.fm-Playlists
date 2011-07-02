@@ -1,0 +1,22 @@
+{
+	"name": "Turntable.fm Playlists",
+	"version": "0.751",
+	"description": "Add custom playlists to turntable.fm",
+	"background_page": "background.html",
+	"content_scripts": [
+		{
+		"matches": ["http://turntable.fm/*"],
+		"css": ["playlists.css"],
+		"js": ["js/jquery-1.6.2.min.js", "js/jquery-ui-1.8.14.min.js", "js/inject.js"]
+		}
+	],
+	"permissions": [
+		"tabs",
+		"http://turntable.fm/*"
+	],
+	"icons": { 
+		"16":"images/icon-16.png",
+		"48":"images/icon-48.png",
+		"128":"images/icon-128.png"
+	}
+}
