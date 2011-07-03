@@ -1,80 +1,238 @@
-#TFMPL { background-color: #F7F7F7; position: absolute; top: 99px; left: 760px; width: 233px; z-index: 20001; -moz-box-shadow: 0 0 8px 2px #333;
--webkit-box-shadow: 0 0 8px 2px #333; }
-
-#TFMPL .black-right-header { cursor: move; }
-#TFMPL .black-right-header .icon { top: 4px; left: 8px; }
-
-#TFMPL .TFMPL { height: 532px; overflow-x: hidden; overflow-y: visible; }
-#TFMPL .TFMPL .song { width: 218px; }
-
-#TFMPL .TFMPL_NEW, #TFMPL .TFMPL_HELPER { position: absolute; top: 80px; left: 8px; background-color: #FEE49C; width: 186px; padding: 12px; }
-#TFMPL .TFMPL_NEW div { font-size: 0.9em; margin-bottom: 6px; }
-#TFMPL .TFMPL_NEW input { font-size: 0.8em; padding: 2px 4px; width: 174px; }
-#TFMPL .TFMPL_NEW span { color: #DA8B00; cursor: pointer; display: block; text-align: right; margin-top: 4px; font-size: 0.7em; }
-
-#TFMPL .TFMPL_HELPER { background: #FEE49C url('http://kollectiv.org/Turntable.fm-Playlists/images/arrow.png') no-repeat left center; top: 80px; background-color: #FEE49C; width: 186px; padding: 36px 10px 32px 74px; color: #FABA43; font-weight: bold; width: 130px; border: 1px dashed #FABA43; }
-
-#TFMPL .TFMPL_FIRST { font-size: 1em; margin-top: 20px; }
-
-#TFMPL .TFMPL_FIRST h2 { margin-bottom: 6px; }
-
-#TFMPL .TFMPL_MENU { background-color: #E7E7E7; height: 30px; padding: 4px 8px; }
-
-#TFMPL dl.dropdown {
-	background-color: #797979;
-	display: inline-block;
-	margin: 0;
-	width: 218px; }
-
-#TFMPL .dropdown dd, .dropdown dt, .dropdown ul {
-	margin: 0px;
-	padding: 0px; }
-
-#TFMPL .dropdown dt {
-	background: url('http://kollectiv.org/Turntable.fm-Playlists/images/dropdown.png') no-repeat scroll 196px center;
-	color: #FFF;
-	display: block;
-	font-size: 1em;
-	padding: 3px 20px 3px 18px;
-	width: 180px; }
-
-#TFMPL .dropdown dt:hover {
-	background-color: #FABA43; }
-	
-#TFMPL .dropdown dt.selected {
-	background-color: #FABA43; }
-
-#TFMPL .dropdown dd {
-	position: relative;
-	z-index: 1; }
-
-#TFMPL .dropdown dd ul {
-	background-color: #FEE49C;
-	color: #333;
-	display: none;
-	left: 0px;
-	list-style: none;
-	max-height: 550px;
-	min-width: 220px;
-	overflow-x: hidden;
-	overflow-y: auto;
-	padding: 0;
+#TFMPL {
+	-moz-box-shadow: 0 0 8px 2px #333;
+	-webkit-box-shadow: 0 0 8px 2px #333;
+	background-color: #F7F7F7;
 	position: absolute;
+	top: 99px;
+	width: 233px;
+	z-index: 999; }
+ 
+	#TFMPL .black-right-header {
+		cursor: move;
+		display: block;
+		position: relative; }
+ 
+		#TFMPL .black-right-header a {
+			cursor: pointer;
+			display: block;
+			height: 12px;
+			position: absolute;
+			top: 6px;
+			width: 12px; }
+ 
+		#TFMPL .black-right-header .icon {
+			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-16.png') no-repeat;
+			height: 16px;
+			left: 8px;
+			top: 4px;
+			width: 16px; }
+ 
+		#TFMPL .black-right-header .new {
+			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-new.png') no-repeat;
+			height: 16px;
+			right: 64px;
+			top: 4px;
+			width: 16px; }
+ 
+		#TFMPL .black-right-header .options {
+			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-options.png') no-repeat;
+			right: 40px; }
+ 
+		#TFMPL .black-right-header .info {
+			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-info.png') no-repeat;
+			right: 24px; }
+ 
+		#TFMPL .black-right-header .help {
+			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-help.png') no-repeat;
+			right: 8px; }
+ 
+	#TFMPL .TFMPL {
+		height: 540px;
+		overflow-x: hidden;
+		overflow-y: visible; }
+ 
+		#TFMPL .TFMPL .song { width: 218px; }	
+ 
+	#TFMPL .TFMPL_NEW, #TFMPL .TFMPL_EMPTY, #TFMPL .TFMPL_OPTIONS, #TFMPL .TFMPL_INFO, #TFMPL .TFMPL_HELP {
+		background-color: #FFE4A1;
+		left: 0;
+		position: absolute;
+		top: 25px;
+		width: 233px; }
+		
+	#TFMPL .TFMPL_OPTIONS, #TFMPL .TFMPL_INFO, #TFMPL .TFMPL_HELP {
+		display: none;
+		height: 570px; }
+		
+	#TFMPL .TFMPL_OPTIONS, #TFMPL .TFMPL_INFO {
+		font-size: 18px;
+		font-weight: bold; }
+		
+	#TFMPL .TFMPL_NEW {
+		display: none;
+		padding: 36px 24px;
+		width: 185px; }
+ 
+		#TFMPL .TFMPL_NEW div {
+			font-size: 16px;
+			font-weight: bold;
+			margin-bottom: 6px; }
+	 
+		#TFMPL .TFMPL_NEW input {
+			font-size: 14px;
+			padding: 2px 4px;
+			width: 174px; }
+	 
+		#TFMPL .TFMPL_NEW span {
+			color: #DA8B00;
+			cursor: pointer;
+			display: block;
+			font-size: 10px;
+			margin-top: 4px;
+			text-align: right; }
+ 
+	#TFMPL .TFMPL_HELP {
+		background: #FEE49C url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/help.png') no-repeat; }
+		
+	#TFMPL .TFMPL_EMPTY {
+		background: transparent url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/drag.png') no-repeat;
+		height: 102px;
+		top: 55px; }
+ 
+	#TFMPL .TFMPL_MENU {  }
+		
+	#TFMPL .TFMPL_WRAPPER {
+		background-color: #FEE49C;
+		display: none;
+		left: 0;
+		padding: 7px;
+		position: absolute;
+		top: 0; }
+		
+	#TFMPL .TFMPL_PLAYLISTS {
+		color: #333;
+		height: 540px;
+		overflow: hidden;
+		width: 219px;
+	}
+
+	#TFMPL dl.dropdown {
+		background-color: #797979;
+		display: inline-block;
+		margin: 0;
+		width: 233px; }
+ 
+	#TFMPL .dropdown dd, .dropdown dt, .dropdown ul {
+		margin: 0px;
+		padding: 0px; }
+ 
+	#TFMPL .dropdown dt {
+		background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/dropdown.png') no-repeat scroll 210px center;
+		color: #FFF;
+		display: block;
+		font-size: 16px;
+		padding: 6px 20px 6px 18px; }
+ 
+		#TFMPL .dropdown dt:hover { background-color: #FABA43; }
+ 
+		#TFMPL .dropdown dt.selected { background-color: #FABA43; }
+ 
+	#TFMPL .dropdown dd {
+		position: relative;
+		z-index: 1; }
+ 
+		#TFMPL .dropdown dd ul {
+			list-style: none; }
+ 
+			#TFMPL .dropdown dd ul li {
+				cursor: pointer;
+				font-size: 15px;
+				padding-bottom: 5px ; }
+ 
+				#TFMPL .dropdown dd ul li:hover { background-color: #FABA43; }
+ 
+	#TFMPL .activeClass { background-color: #FFA; }
+ 
+	#TFMPL .hoverClass { background-color: #FABA43; }
+ 
+	#TFMPL .highlightClass { background-color: #FFF; height: 42px; }
+		
+/*
+ * CSS Styles that are needed by jScrollPane for it to operate correctly.
+ *
+ * Include this stylesheet in your site or copy and paste the styles below into your stylesheet - jScrollPane
+ * may not operate correctly without them.
+ */
+
+.jspContainer {
+	overflow: hidden;
+	position: relative; }
+
+.jspPane { position: absolute; }
+
+.jspVerticalBar {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 10px;
+	height: 100%;
+	background: transparent; }
+
+.jspHorizontalBar {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 16px;
+	background: red; }
+
+.jspVerticalBar *, .jspHorizontalBar * {
+	margin: 0;
+	padding: 0; }
+
+.jspCap { display: none; }
+
+.jspHorizontalBar .jspCap { float: left; }
+
+.jspTrack {
+	background: #444236;
+	position: relative; }
+
+.jspDrag {
+	background: #FABA43;
+	position: relative;
 	top: 0;
-	width: auto; }
-	
-#TFMPL .dropdown dd ul li {
+	left: 0;
+	cursor: pointer; }
+
+.jspHorizontalBar .jspTrack,
+.jspHorizontalBar .jspDrag {
+	float: left;
+	height: 100%; }
+
+.jspArrow {
+	background: #FD9D00;
+	text-indent: -20000px;
 	display: block;
-	font-size: 0.9em;
-	padding: 4px 6px; }
-	
-#TFMPL .dropdown dd ul li.new_playlist {
-	border-top: 1px solid #ECA715;
-	margin-top: 10px; }
+	cursor: pointer; }
 
-#TFMPL .dropdown dd ul li:hover { background-color: #FABA43; }
+.jspArrow.jspDisabled {
+	cursor: default;
+	background: #80808d; }
 
+.jspVerticalBar .jspArrow { height: 16px; }
 
-#TFMPL .activeClass { background-color: #FFA; }
-#TFMPL .hoverClass { background-color: #FABA43; }
-#TFMPL .highlightClass { background-color: #FFF; height: 42px; }
+.jspHorizontalBar .jspArrow {
+	width: 16px;
+	float: left;
+	height: 100%; }
+
+.jspVerticalBar .jspArrow:focus { outline: none; }
+
+.jspCorner {
+	background: #eeeef4;
+	float: left;
+	height: 100%; }
+
+/* Yuk! CSS Hack for IE6 3 pixel bug :( */
+* html .jspCorner { margin: 0 -3px 0 0; }
