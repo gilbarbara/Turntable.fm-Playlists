@@ -1,17 +1,24 @@
 if (typeof(TFMPL) == "undefined") {
 	TFMPL = {
+		version: '0.814',
 		started: null,
+		showLog: false,
 		userData: false,
-		playlists: {},
-		$body: $("body")
+		userId: null,
+		playlists: {}
 	};
 }
 
+TFMPL.log = function(msg) {
+	if (TFMPL.showLog) console.log(msg);
+};
+
 TFMPL.start = function() {
+	TFMPL.log("start");
 	this.started = true;
 	this.storage.restore();
 	this.ui.init();
-
+	
 	$(".songlist .queue.realPlaylist").
 	sortable("option", { axis: false }).
 	filter('.song').
@@ -21,14 +28,16 @@ TFMPL.start = function() {
 		helper: "clone",
 		stack: ".song"
 	});
+	
 };
 
 TFMPL.updated = function() {
 	return Math.round((new Date()).getTime() / 1000).toString();
-}();
+};
 
 TFMPL.storage = {
 	support: function() {
+		TFMPL.log("storage.support");
 		try {
 			return !!localStorage.getItem;
 		} catch(e) {
@@ -36,30 +45,41 @@ TFMPL.storage = {
 		}
 	}(),
 	backup: function() {
+		TFMPL.log("storage.backup");
+		var preferences = {
+			userid: TFMPL.user.userId,
+			songCount: TFMPL.utils.totalPlaylists(),
+			created: TFMPL.user.created,
+			version: TFMPL.version
+		};
 		if (TFMPL.utils.size(TFMPL.playlists)) {
-			localStorage.setItem("TFMPL", "{\"playlists\":" + JSON.stringify(TFMPL.playlists) + "}");
+			localStorage.setItem("TFMPL", "{\"preferences\":" + JSON.stringify(preferences) + ", \"playlists\":" + JSON.stringify(TFMPL.playlists) + "}");
 		}
 	},
 	restore: function() {
+		TFMPL.log("storage.restore");
 		var storage = localStorage.getItem("TFMPL");
 		if(storage !== "undefined" && storage !== null) {
 			storage = JSON.parse(storage);
 			TFMPL.playlists = storage.playlists;
+			$.extend(TFMPL.user, storage.preferences);
 			TFMPL.userData = true;
 		}
 	},
 	destroy: function() {
+		TFMPL.log("storage.destroy");
 		localStorage.setItem("TFMPL");
 	}
 };
 
 TFMPL.playlist = {
 	create: function(value) {
+		TFMPL.log("playlist.create");
 		TFMPL.ui.cleanUp();
-		var slug = TFMPL.utils.guid(TFMPL.updated);
+		var slug = TFMPL.utils.guid(TFMPL.updated());
 		TFMPL.playlists[slug] = {
 			"name": value,
-			"updated": TFMPL.updated,
+			"updated": TFMPL.updated(),
 			songs: []
 		};
 		TFMPL.storage.backup();
@@ -67,6 +87,7 @@ TFMPL.playlist = {
 		TFMPL.ui.load(slug);
 	},
 	save: function() {
+		TFMPL.log("playlist.save");
 		if ($(".TFMPL .song").length) {
 		var songs = [];
 			$(".TFMPL .song").each(function() {
@@ -78,23 +99,33 @@ TFMPL.playlist = {
 			TFMPL.playlists[$(".TFMPL").data("playlist")].songs = [];
 			TFMPL.ui.empty();
 		}
-		TFMPL.playlists[$(".TFMPL").data("playlist")].updated = TFMPL.updated;
+		TFMPL.playlists[$(".TFMPL").data("playlist")].updated = TFMPL.updated();
 		TFMPL.storage.backup();
 	},
 	remove: function(slug) {
+		TFMPL.log("playlist.remove");
 		delete TFMPL.playlists[value];
 		TFMPL.storage.backup();
-		TFMPL.ui.menu(slug);
+		TFMPL.ui.menu();
 	}
+};
+
+TFMPL.user = {
+	userId: turntable.user.id,
+	songCount: 0,
+	created: TFMPL.updated(),
+	version: this.version
 };
 
 TFMPL.ui = {
 	init: function() {
+		TFMPL.log("ui.init");
+		
 		if (!$("#TFMPL").length) {
-			TFMPL.$body.prepend($("<div/>").
+			$("<div/>").
 				attr("id", "TFMPL").
 				addClass("playlist-container").
-				css("left",Math.round((760 + (($(window).width() - 760)) / 2) + 10)));
+				css("left",Math.round((760 + (($(window).width() - 760)) / 2) + 10)).appendTo("body");
 				
 			$("<div/>").
 				addClass("black-right-header").
@@ -139,9 +170,10 @@ TFMPL.ui = {
 				});
 		}
 		
-		if (TFMPL.utils.newest()) {
-			this.load(TFMPL.utils.newest());
-		} else {
+		var newest = TFMPL.utils.newest();
+		this.menu(newest);
+		this.load(newest);
+		if (!newest) {
 			$(".TFMPL").droppable("option", "disabled", true);
 			if (!TFMPL.userData) {
 				this.help();
@@ -150,9 +182,10 @@ TFMPL.ui = {
 				this.create();
 			}
 		}
-		this.menu(TFMPL.utils.newest());
+		
 	},
 	load: function(playlist) {
+		TFMPL.log("ui.load");
 		this.cleanUp();
 		if (playlist && TFMPL.playlists[playlist]) {
 			$(".TFMPL").html("").data("playlist", playlist);
@@ -163,6 +196,7 @@ TFMPL.ui = {
 				for(var i in songs) {
 					$(".realPlaylist .song:data('songData.fileId="+ songs[i] +"')").clone(true).cleanSong().appendTo(".TFMPL");
 				}
+				$("#TFMPL dt").html(TFMPL.playlists[playlist].name);
 			}
 			else {
 				this.empty();
@@ -171,9 +205,10 @@ TFMPL.ui = {
 		else {
 			this.create();
 		}
-		
 	},
 	menu: function(selected) {
+		TFMPL.log("ui.menu");
+		
 		$menu = $("<dl/>").attr({ id: "TFMPL_MENU" }).addClass("dropdown");
 		$menu.append("<dt>" + (selected ? TFMPL.playlists[selected].name : "Playlists") + "</dt>");
 		
@@ -185,53 +220,61 @@ TFMPL.ui = {
 		loop += "</ul></div></div>";
 		$menu.append("<dd>" + loop + "</dd>");
 		$menu.find("ul li").tsort();
-		$("#TFMPL .TFMPL_MENU").html($menu);		
+		$("#TFMPL .TFMPL_MENU").html($menu);
 	},
 	info: function() {
+		TFMPL.log("ui.info");
 		this.cleanUp();
 		$("<div/>").addClass("TFMPL_INFO destroyable").appendTo("#TFMPL");
 		$("<div/>").css({ padding: "64px 32px"}).html("Maybe tomorrow.<br/>or tuesday? :)").appendTo(".TFMPL_INFO");
 		$(".TFMPL_INFO").slideDown(1800, "easeOutElastic");
+
 	},
 	options: function() {
+		TFMPL.log("ui.options");
 		this.cleanUp();
 		$("<div/>").addClass("TFMPL_OPTIONS destroyable").appendTo("#TFMPL");
 		$("<div/>").css({ padding: "64px 32px"}).html("Working on it.<br/>Check back soon").appendTo(".TFMPL_OPTIONS");
 		$(".TFMPL_OPTIONS").slideDown(1800, "easeOutElastic");
 	},
 	help: function() {
+		TFMPL.log("ui.help");
 		this.cleanUp();
 		$("<div/>").addClass("TFMPL_HELP destroyable").appendTo("#TFMPL");
 		$(".TFMPL_HELP").slideDown(1800, "easeOutElastic");
 	},
 	empty: function() {
+		TFMPL.log("ui.empty");
 		this.cleanUp();
 		$("<div/>").addClass("TFMPL_EMPTY destroyable").appendTo("#TFMPL");
-		$(".TFMPL_EMPTY").slideDown(1800, "easeOutElastic");
 	},
 	cleanUp: function() {
 		if ($(".TFMPL_WRAPPER").is(":visible")) $("#TFMPL dt").trigger("click");
 		$("#TFMPL .destroyable").remove();
 	},
 	create: function() {
+		TFMPL.log("ui.create");
 		this.cleanUp();
 		$("<div/>").addClass("TFMPL_NEW destroyable").html("<div>Add a new playlist</div><input type=\"text\"/><span>cancel</span>").appendTo("#TFMPL");
 		$(".TFMPL_NEW input").populate('name');
 		$(".TFMPL_NEW").slideDown(1800, "easeOutElastic");
 	},
 	refresh: function() {
+		TFMPL.log("ui.refresh");
 		if ($("#TFMPL").length) {
 			$("#TFMPL").remove();
 		}
 		this.init();
 	},
 	destroy: function() {
+		TFMPL.log("ui.destroy");
 		$("#TFMPL").remove();
 	}
 };
 
 TFMPL.utils = {
 	guid: function(val) {
+		TFMPL.log("utils.guid");
 		var result = "", replaces = ["Oo", "Ll", "Rr", "Ee", "Aa", "Ss", "Gg", "Tt", "Bb", "Qq"];
 		numbers = val.split("");
 		for(var i in numbers) {
@@ -241,6 +284,7 @@ TFMPL.utils = {
 		return result;
 	},
 	newest: function() {
+		TFMPL.log("utils.newest");
 		var largest = {
 			key: null,
 			val: null
@@ -254,11 +298,29 @@ TFMPL.utils = {
 		return largest.key;
 	},
 	size: function(obj) {
+		TFMPL.log("utils.size");
 		var size = 0, key;
 		for (key in obj) {
 			if (obj.hasOwnProperty(key)) size++;
 		}
 		return size;
+	},
+	totalPlaylists: function(playlist) {
+		TFMPL.log("utils.totalPlaylists");
+		var total = 0, key;
+		if(playlist) {
+			total += TFMPL.playlists[playlist].songs.length;
+		}
+		else {
+			for (key in TFMPL.playlists) {
+				total += TFMPL.playlists[key].songs.length;
+			}
+		}
+		return total;
+	},
+	totalQueue: function() {
+		TFMPL.log("utils.totalQueue");
+		return ($(".realPlaylist .song").length | TFMPL.user.songCount)
 	}
 };
 
@@ -295,7 +357,8 @@ $("#TFMPL .dropdown dt").live("click", function(e) {
 		$(this).closest(".dropdown").find("dd .TFMPL_WRAPPER").stop().animate({ height: 'toggle' });
 	}
 	$(this).promise().done(function() {
-		if (!$("#TFMPL .TFMPL_PLAYLISTS").data('jsp')) $("#TFMPL .TFMPL_PLAYLISTS").jScrollPane({ hideFocus: true, verticalDragMinHeight: 16, verticalDragMaxHeight: 64 });
+		if (!$("#TFMPL .TFMPL_PLAYLISTS").data('jsp')) $("#TFMPL .TFMPL_PLAYLISTS").jScrollPane({ hideFocus: true, verticalDragMinHeight: 16 });
+		//, verticalDragMaxHeight: 64
 	});
 	
 });

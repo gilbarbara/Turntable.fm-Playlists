@@ -47,7 +47,7 @@
 			right: 8px; }
  
 	#TFMPL .TFMPL {
-		height: 540px;
+		height: 547px;
 		overflow-x: hidden;
 		overflow-y: visible; }
  
@@ -62,7 +62,7 @@
 		
 	#TFMPL .TFMPL_OPTIONS, #TFMPL .TFMPL_INFO, #TFMPL .TFMPL_HELP {
 		display: none;
-		height: 570px; }
+		height: 577px; }
 		
 	#TFMPL .TFMPL_OPTIONS, #TFMPL .TFMPL_INFO {
 		font-size: 18px;
@@ -111,7 +111,7 @@
 		
 	#TFMPL .TFMPL_PLAYLISTS {
 		color: #333;
-		height: 540px;
+		height: 533px;
 		overflow: hidden;
 		width: 219px;
 	}
