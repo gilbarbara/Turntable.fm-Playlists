@@ -1,6 +1,6 @@
 {
 	"name": "Turntable.fm Playlist Manager",
-	"version": "0.814",
+	"version": "0.822",
 	"description": "Add playlist options in turntable.fm",
 	"background_page": "background.html",
 	"content_scripts": [
@@ -17,6 +17,10 @@
 	"icons": { 
 		"16":"images/icon-16.png",
 		"48":"images/icon-48.png",
-		"128":"images/icon-128.png"
+		"128":"images/icon-128.png",
+		"new":"images/icon-new.png",
+		"options":"images/icon-options.png",
+		"info":"images/icon-info.png",
+		"help":"images/icon-help.png"
 	}
 }

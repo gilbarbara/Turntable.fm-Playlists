@@ -1,7 +1,14 @@
+/*
+ local: lfohcpiljjfpecdjjhobbcpgpapngike
+ online: eimhdmlhdgmboegnmecdnfbmdmhdoool
+ 
+*/
+
 #TFMPL {
 	-moz-box-shadow: 0 0 8px 2px #333;
 	-webkit-box-shadow: 0 0 8px 2px #333;
 	background-color: #F7F7F7;
+	color: #555;
 	position: absolute;
 	top: 99px;
 	width: 233px;
@@ -46,7 +53,7 @@
 			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-help.png') no-repeat;
 			right: 8px; }
  
-	#TFMPL .TFMPL {
+	#TFMPL .TFMPL, #TFMPL .TFMPL_OPTIONS, #TFMPL .TFMPL_INFO {
 		height: 547px;
 		overflow-x: hidden;
 		overflow-y: visible; }
@@ -55,21 +62,15 @@
  
 	#TFMPL .TFMPL_NEW, #TFMPL .TFMPL_EMPTY, #TFMPL .TFMPL_OPTIONS, #TFMPL .TFMPL_INFO, #TFMPL .TFMPL_HELP {
 		background-color: #FFE4A1;
+		display: none;
 		left: 0;
 		position: absolute;
-		top: 25px;
+		top: 55px;
 		width: 233px; }
 		
-	#TFMPL .TFMPL_OPTIONS, #TFMPL .TFMPL_INFO, #TFMPL .TFMPL_HELP {
-		display: none;
-		height: 577px; }
-		
-	#TFMPL .TFMPL_OPTIONS, #TFMPL .TFMPL_INFO {
-		font-size: 18px;
-		font-weight: bold; }
+	#TFMPL .TFMPL_HELP { height: 577px; }
 		
 	#TFMPL .TFMPL_NEW {
-		display: none;
 		padding: 36px 24px;
 		width: 185px; }
  
@@ -90,14 +91,55 @@
 			font-size: 10px;
 			margin-top: 4px;
 			text-align: right; }
+			
+	#TFMPL .TFMPL_INFO {
+		-webkit-background-size: 96px;
+		background: #FFE4A1 url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-128.png') no-repeat 50% 400px;
+		background-size: 96px; }
+	
+	#TFMPL .TFMPL_INFO .subtitle, #TFMPL .TFMPL_OPTIONS .subtitle {
+		font-size: 36px;
+		font-weight: bold;
+		padding: 12px 0;
+		text-align: center; }
+		
+	#TFMPL .TFMPL_INFO .block {
+		-moz-border-radius: 6px;
+		-webkit-border-radius: 6px;
+		border: none;
+		background-color: #FABA43;
+		display: inline-block;
+		margin: 0 0 17px 17px;
+		padding: 12px;
+		width: 68px; }
+		
+		#TFMPL .TFMPL_INFO .block .number {
+			font-size: 28px;
+			font-weight: bold;
+			margin-bottom: 2px;
+			text-align: center; }
+		
+		#TFMPL .TFMPL_INFO .block .text {
+			font-size: 11px;
+			text-align: center; }
+			
+	#TFMPL .TFMPL_INFO .installed, #TFMPL .TFMPL_INFO .version {
+		font-size: 11px;
+		margin: 0 0 4px 17px; }
+			
+	#TFMPL .TFMPL_OPTIONS {
+		font-size: 18px;
+		font-weight: bold; }
  
 	#TFMPL .TFMPL_HELP {
-		background: #FEE49C url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/help.png') no-repeat; }
+		background: #FEE49C url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/help.png') no-repeat;
+		top: 25px; }
 		
 	#TFMPL .TFMPL_EMPTY {
 		background: transparent url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/drag.png') no-repeat;
 		height: 102px;
-		top: 55px; }
+		top: 55px;
+		width: 233px; }
  
 	#TFMPL .TFMPL_MENU {  }
 		
@@ -105,7 +147,7 @@
 		background-color: #FEE49C;
 		display: none;
 		left: 0;
-		padding: 7px;
+		padding: 8px;
 		position: absolute;
 		top: 0; }
 		
@@ -131,7 +173,7 @@
 		color: #FFF;
 		display: block;
 		font-size: 16px;
-		padding: 6px 20px 6px 18px; }
+		padding: 6px 20px 6px 8px; }
  
 		#TFMPL .dropdown dt:hover { background-color: #FABA43; }
  

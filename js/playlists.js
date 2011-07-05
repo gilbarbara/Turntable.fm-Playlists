@@ -1,10 +1,12 @@
 if (typeof(TFMPL) == "undefined") {
 	TFMPL = {
-		version: '0.814',
+		name: "Playlist Manager",
+		version: "0.822",
 		started: null,
-		showLog: false,
 		userData: false,
-		userId: null,
+		lastSong: null,
+		songsCounter: null,
+		showLog: false,
 		playlists: {}
 	};
 }
@@ -28,6 +30,9 @@ TFMPL.start = function() {
 		helper: "clone",
 		stack: ".song"
 	});
+	this.songsCounter = setInterval(function() {
+		TFMPL.utils.songsCounter();
+	}, 15000)
 	
 };
 
@@ -48,7 +53,7 @@ TFMPL.storage = {
 		TFMPL.log("storage.backup");
 		var preferences = {
 			userid: TFMPL.user.userId,
-			songCount: TFMPL.utils.totalPlaylists(),
+			songsCount: TFMPL.utils.songsCounter(),
 			created: TFMPL.user.created,
 			version: TFMPL.version
 		};
@@ -64,6 +69,11 @@ TFMPL.storage = {
 			TFMPL.playlists = storage.playlists;
 			$.extend(TFMPL.user, storage.preferences);
 			TFMPL.userData = true;
+			
+			//fixes
+			if (TFMPL.user.version < 0.820) {
+				TFMPL.user.songsCount = 0;
+			}
 		}
 	},
 	destroy: function() {
@@ -112,7 +122,7 @@ TFMPL.playlist = {
 
 TFMPL.user = {
 	userId: turntable.user.id,
-	songCount: 0,
+	songsCount: 0,
 	created: TFMPL.updated(),
 	version: this.version
 };
@@ -222,42 +232,63 @@ TFMPL.ui = {
 		$menu.find("ul li").tsort();
 		$("#TFMPL .TFMPL_MENU").html($menu);
 	},
+	create: function() {
+		TFMPL.log("ui.create");
+		this.cleanUp("TFMPL_NEW");
+		if (!$(".TFMPL_NEW:visible").length) {
+			$("<div/>").addClass("TFMPL_NEW destroyable").html("<div>Add a new playlist</div><input type=\"text\"/><span>cancel</span>").appendTo("#TFMPL");
+			$(".TFMPL_NEW input").populate('name');
+			$(".TFMPL_NEW").slideDown(800, "easeOutBounce");
+		}
+	},
 	info: function() {
 		TFMPL.log("ui.info");
-		this.cleanUp();
-		$("<div/>").addClass("TFMPL_INFO destroyable").appendTo("#TFMPL");
-		$("<div/>").css({ padding: "64px 32px"}).html("Maybe tomorrow.<br/>or tuesday? :)").appendTo(".TFMPL_INFO");
-		$(".TFMPL_INFO").slideDown(1800, "easeOutElastic");
+		this.cleanUp("TFMPL_INFO");
+		if (!$(".TFMPL_INFO:visible").length) {
+			$("<div/>").addClass("TFMPL_INFO destroyable").appendTo("#TFMPL");
+			$("<div/>").addClass("subtitle").html("STATS").appendTo(".TFMPL_INFO");
+			$("<div/>").addClass("block").html("<div class=\"number\">" + TFMPL.utils.totalPlaylists() + "</div><div class=\"text\">playlists<br/>&nbsp;</div>").appendTo(".TFMPL_INFO");
+			$("<div/>").addClass("block").html("<div class=\"number\">" + TFMPL.utils.totalSongs() + "</div><div class=\"text\">songs in your playlists</div>").appendTo(".TFMPL_INFO");
+			$("<div/>").addClass("block").html("<div class=\"number\">" + TFMPL.user.songsCount + "</div><div class=\"text\">songs played since install</div>").appendTo(".TFMPL_INFO");
+			$("<div/>").addClass("block").html("<div class=\"number\">" + TFMPL.utils.totalQueue() + "</div><div class=\"text\">songs in your queue</div>").appendTo(".TFMPL_INFO");
+			var install = new Date(TFMPL.user.created*1000);
+			$("<div/>").addClass("installed").html("installed in " + (install.getMonth() < 9 ? "0" : "") + (install.getMonth() + 1) + "." + (install.getDay() < 9 ? "0" : "") + install.getDay() + "." + install.getFullYear()).appendTo(".TFMPL_INFO");
+			
+			$("<div/>").addClass("version").html("version: " + TFMPL.version).appendTo(".TFMPL_INFO");
+			
+			$(".TFMPL_INFO").slideDown(800, "easeOutBounce");
+		}
 
 	},
 	options: function() {
 		TFMPL.log("ui.options");
-		this.cleanUp();
-		$("<div/>").addClass("TFMPL_OPTIONS destroyable").appendTo("#TFMPL");
-		$("<div/>").css({ padding: "64px 32px"}).html("Working on it.<br/>Check back soon").appendTo(".TFMPL_OPTIONS");
-		$(".TFMPL_OPTIONS").slideDown(1800, "easeOutElastic");
+		this.cleanUp("TFMPL_OPTIONS");
+		if (!$(".TFMPL_OPTIONS:visible").length) {
+			$("<div/>").addClass("TFMPL_OPTIONS destroyable").appendTo("#TFMPL");
+			$("<div/>").addClass("subtitle").html("OPTIONS").appendTo(".TFMPL_OPTIONS");
+			$("<div/>").css({ padding: "16px 32px"}).html("Working on it.<br/>Check back soon").appendTo(".TFMPL_OPTIONS");
+			$(".TFMPL_OPTIONS").slideDown(800, "easeOutBounce");
+		}
 	},
 	help: function() {
 		TFMPL.log("ui.help");
-		this.cleanUp();
-		$("<div/>").addClass("TFMPL_HELP destroyable").appendTo("#TFMPL");
-		$(".TFMPL_HELP").slideDown(1800, "easeOutElastic");
+		this.cleanUp("TFMPL_HELP");
+		if (!$(".TFMPL_HELP:visible").length) {
+			$("<div/>").addClass("TFMPL_HELP destroyable").appendTo("#TFMPL");
+			$(".TFMPL_HELP").slideDown(800, "easeOutBounce");
+		}
 	},
 	empty: function() {
 		TFMPL.log("ui.empty");
 		this.cleanUp();
 		$("<div/>").addClass("TFMPL_EMPTY destroyable").appendTo("#TFMPL");
+		$(".TFMPL_EMPTY").show();
 	},
-	cleanUp: function() {
+	cleanUp: function(except) {
 		if ($(".TFMPL_WRAPPER").is(":visible")) $("#TFMPL dt").trigger("click");
-		$("#TFMPL .destroyable").remove();
-	},
-	create: function() {
-		TFMPL.log("ui.create");
-		this.cleanUp();
-		$("<div/>").addClass("TFMPL_NEW destroyable").html("<div>Add a new playlist</div><input type=\"text\"/><span>cancel</span>").appendTo("#TFMPL");
-		$(".TFMPL_NEW input").populate('name');
-		$(".TFMPL_NEW").slideDown(1800, "easeOutElastic");
+		$("#TFMPL .destroyable").filter(function(index) {
+			return ($(this).hasClass(except) ? false : true);
+		}).remove();
 	},
 	refresh: function() {
 		TFMPL.log("ui.refresh");
@@ -305,11 +336,16 @@ TFMPL.utils = {
 		}
 		return size;
 	},
-	totalPlaylists: function(playlist) {
+	totalPlaylists: function() {
 		TFMPL.log("utils.totalPlaylists");
+		return this.size(TFMPL.playlists);
+		
+	},
+	totalSongs: function(slug) {
+		TFMPL.log("utils.totalSongs");
 		var total = 0, key;
-		if(playlist) {
-			total += TFMPL.playlists[playlist].songs.length;
+		if(slug) {
+			total += TFMPL.playlists[slug].songs.length;
 		}
 		else {
 			for (key in TFMPL.playlists) {
@@ -320,13 +356,23 @@ TFMPL.utils = {
 	},
 	totalQueue: function() {
 		TFMPL.log("utils.totalQueue");
-		return ($(".realPlaylist .song").length | TFMPL.user.songCount)
+		return $(".realPlaylist .song").length;
+	},
+	songsCounter: function() {
+		if ($(".realPlaylist .currentSong").length) {
+			if ($(".realPlaylist .currentSong").data('songData').fileId != TFMPL.lastSong) {
+				TFMPL.lastSong = $(".realPlaylist .currentSong").data('songData').fileId;
+				TFMPL.user.songsCount += + 1;
+				TFMPL.storage.backup();
+			}
+		}
+		return TFMPL.user.songsCount;
 	}
 };
 
 $("#TFMPL a.icon").live("click", function(e) {
 	e.preventDefault();
-	TFMPL.ui.load(TFMPL.utils.newest());
+	TFMPL.ui.load($("#TFMPL .TFMPL").data('playlist') ? $("#TFMPL .TFMPL").data('playlist') : TFMPL.utils.newest());
 });
 
 $("#TFMPL a.new").live("click", function(e) {
@@ -352,7 +398,7 @@ $("#TFMPL a.help").live("click", function(e) {
 $("#TFMPL .dropdown dt").live("click", function(e) {
 	e.preventDefault();
 	if (!$("#TFMPL .TFMPL_PLAYLISTS:visible").length) {
-		$(this).closest(".dropdown").find("dd .TFMPL_WRAPPER").stop().animate({ height: 'toggle' }, 1800, "easeOutElastic");
+		$(this).closest(".dropdown").find("dd .TFMPL_WRAPPER").stop().animate({ height: 'toggle' }, 800, "easeOutBounce");
 	} else {
 		$(this).closest(".dropdown").find("dd .TFMPL_WRAPPER").stop().animate({ height: 'toggle' });
 	}
