@@ -114,7 +114,7 @@
 		width: 68px; }
 		
 		#TFMPL .TFMPL_INFO .block .number {
-			font-size: 28px;
+			font-size: 32px;
 			font-weight: bold;
 			margin-bottom: 2px;
 			text-align: center; }
@@ -192,6 +192,17 @@
 				padding-bottom: 5px ; }
  
 				#TFMPL .dropdown dd ul li:hover { background-color: #FABA43; }
+				
+	#TFMPL.playlist-container .song .goTop {
+ 		background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/go-top.png') 0 -20px;
+		height: 20px; }
+		
+		#TFMPL.playlist-container .song .goTop:hover {
+ 		background-position: 0 0; }
+ 	
+ 	#TFMPL.playlist-container .queueView .song .remove {
+ 		background-image: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/remove-button.png');
+		top: 4px; }
  
 	#TFMPL .activeClass { background-color: #FFA; }
  

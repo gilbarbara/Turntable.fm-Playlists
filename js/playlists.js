@@ -1,7 +1,7 @@
 if (typeof(TFMPL) == "undefined") {
 	TFMPL = {
 		name: "Playlist Manager",
-		version: "0.822",
+		version: "0.826",
 		started: null,
 		userData: false,
 		lastSong: null,
@@ -135,7 +135,7 @@ TFMPL.ui = {
 			$("<div/>").
 				attr("id", "TFMPL").
 				addClass("playlist-container").
-				css("left",Math.round((760 + (($(window).width() - 760)) / 2) + 10)).appendTo("body");
+				css({ width: 233, top: 99, left: Math.round((760 + (($(window).width() - 760)) / 2) + 10) }).appendTo("body");
 				
 			$("<div/>").
 				addClass("black-right-header").
@@ -192,7 +192,6 @@ TFMPL.ui = {
 				this.create();
 			}
 		}
-		
 	},
 	load: function(playlist) {
 		TFMPL.log("ui.load");
