@@ -41,8 +41,8 @@
 			top: 4px;
 			width: 16px; }
  
-		#TFMPL .black-right-header .options {
-			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-options.png') no-repeat;
+		#TFMPL .black-right-header .settings {
+			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-settings.png') no-repeat;
 			right: 40px; }
  
 		#TFMPL .black-right-header .info {
@@ -53,14 +53,14 @@
 			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-help.png') no-repeat;
 			right: 8px; }
  
-	#TFMPL .TFMPL, #TFMPL .TFMPL_OPTIONS, #TFMPL .TFMPL_INFO {
+	#TFMPL .TFMPL, #TFMPL .TFMPL_SETTINGS, #TFMPL .TFMPL_INFO {
 		height: 547px;
 		overflow-x: hidden;
 		overflow-y: visible; }
  
 		#TFMPL .TFMPL .song { width: 218px; }	
  
-	#TFMPL .TFMPL_NEW, #TFMPL .TFMPL_EMPTY, #TFMPL .TFMPL_OPTIONS, #TFMPL .TFMPL_INFO, #TFMPL .TFMPL_HELP {
+	#TFMPL .TFMPL_NEW, #TFMPL .TFMPL_EMPTY, #TFMPL .TFMPL_SETTINGS, #TFMPL .TFMPL_INFO, #TFMPL .TFMPL_HELP {
 		background-color: #FFE4A1;
 		display: none;
 		left: 0;
@@ -97,8 +97,8 @@
 		background: #FFE4A1 url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-128.png') no-repeat 50% 400px;
 		background-size: 96px; }
 	
-	#TFMPL .TFMPL_INFO .subtitle, #TFMPL .TFMPL_OPTIONS .subtitle {
-		font-size: 36px;
+	#TFMPL .TFMPL_INFO .subtitle {
+		font-size: 32px;
 		font-weight: bold;
 		padding: 12px 0;
 		text-align: center; }
@@ -123,13 +123,73 @@
 			font-size: 11px;
 			text-align: center; }
 			
-	#TFMPL .TFMPL_INFO .installed, #TFMPL .TFMPL_INFO .version {
+	#TFMPL .TFMPL_INFO .installed, #TFMPL .TFMPL_INFO .version, #TFMPL .TFMPL_INFO .links {
 		font-size: 11px;
 		margin: 0 0 4px 17px; }
+		
+		#TFMPL .TFMPL_INFO a { color: #000; }
 			
-	#TFMPL .TFMPL_OPTIONS {
-		font-size: 18px;
-		font-weight: bold; }
+	#TFMPL .TFMPL_SETTINGS {
+		padding: 16px;
+		width: 201px; }
+		
+		#TFMPL .TFMPL_SETTINGS .title {
+			font-size: 18px;
+			font-weight: bold;
+			margin-bottom: 16px; }
+		
+		#TFMPL .TFMPL_SETTINGS .subtitle {
+			font-size: 15px;
+			font-weight: bold;
+			margin-bottom: 8px; }
+		
+		#TFMPL .TFMPL_SETTINGS .fields {
+			height: 320px;
+			margin-bottom: 4px;
+			opacity: 0;
+			overflow: hidden; }
+		
+		#TFMPL .TFMPL_SETTINGS .field {
+			margin-bottom: 2px;
+			text-align: right; }
+		
+		#TFMPL .TFMPL_SETTINGS .field a {
+			background: transparent url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-delete.png') no-repeat 0 0;
+			display: inline-block;
+			height: 16px;
+			margin-left: 4px;
+			vertical-align: middle;
+			width: 16px; }
+			
+		#TFMPL .TFMPL_SETTINGS .field button {
+			-moz-border-radius: 2px;
+			-webkit-border-radius: 2px;
+			background-color: transparent;
+			border: none;
+			color: #FF0000;
+			cursor: pointer;
+			display: none;
+			font-size: 12px;
+			margin: 3px 0;
+			padding: 1px 4px; }
+			
+			
+		#TFMPL .TFMPL_SETTINGS .field input {
+			background-color: #FDEBB7;
+			border: none;
+			border-bottom: 1px solid #FABA43;
+			color: #000;
+			outline: none;
+			padding: 4px 6px;
+			margin: 0;
+			width: 154px; }
+			
+		#TFMPL .TFMPL_SETTINGS .tip {
+			font-size: 13px;
+			font-style: italic;
+			margin-bottom: 32px; }
+			
+		#TFMPL .TFMPL_SETTINGS .text {}
  
 	#TFMPL .TFMPL_HELP {
 		background: #FEE49C url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/help.png') no-repeat;
