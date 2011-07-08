@@ -139,12 +139,16 @@
 			margin-bottom: 16px; }
 		
 		#TFMPL .TFMPL_SETTINGS .subtitle {
-			font-size: 15px;
-			font-weight: bold;
 			margin-bottom: 8px; }
+			
+			#TFMPL .TFMPL_SETTINGS .subtitle a {
+				color: #555;
+				font-size: 15px;
+				font-weight: bold;
+				text-decoration: none; }
 		
 		#TFMPL .TFMPL_SETTINGS .fields {
-			height: 320px;
+			height: 400px;
 			margin-bottom: 4px;
 			opacity: 0;
 			overflow: hidden; }
@@ -173,7 +177,6 @@
 			margin: 3px 0;
 			padding: 1px 4px; }
 			
-			
 		#TFMPL .TFMPL_SETTINGS .field input {
 			background-color: #FDEBB7;
 			border: none;
@@ -187,9 +190,15 @@
 		#TFMPL .TFMPL_SETTINGS .tip {
 			font-size: 13px;
 			font-style: italic;
-			margin-bottom: 32px; }
+			margin-bottom: 16px; }
 			
-		#TFMPL .TFMPL_SETTINGS .text {}
+		#TFMPL .TFMPL_SETTINGS .backup_restore {
+			font-size: 13px;
+			display: none; }
+		
+		#TFMPL .TFMPL_SETTINGS .backup_restore textarea {
+			height: 60px;
+			width: 201px; }
  
 	#TFMPL .TFMPL_HELP {
 		background: #FEE49C url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/help.png') no-repeat;
@@ -265,10 +274,18 @@
 		top: 4px; }
  
 	#TFMPL .activeClass { background-color: #FFA; }
- 
 	#TFMPL .hoverClass { background-color: #FABA43; }
- 
 	#TFMPL .highlightClass { background-color: #FFF; height: 42px; }
+	
+	#TFMPL .matchesRecentlyPlayedExactly { background-color: #faa; }
+	#TFMPL .matchesRecentlyPlayedArtist { background-color: #ffa; }
+	#TFMPL .matchesRecentlyPlayedSongTitle { background-color: #ffd5aa; }
+	#TFMPL .matchesRecentlyPlayedExactly.topSong { background-color: #FEE8AF; }
+	
+	#TFMPL #response {
+		color: #FF0000;
+		font-weight: bold; }
+	
 		
 /*
  * CSS Styles that are needed by jScrollPane for it to operate correctly.
