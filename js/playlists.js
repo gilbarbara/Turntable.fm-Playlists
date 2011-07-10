@@ -13,7 +13,7 @@ C L A S S E S
 if (typeof(TFMPL) == "undefined") {
 	TFMPL = {
 		name: "Playlist Manager",
-		version: "0.870",
+		version: "0.900",
 		started: null,
 		userData: false,
 		lastSong: null,
@@ -33,18 +33,9 @@ TFMPL.start = function() {
 	this.storage.load();
 	this.ui.init();
 	
-	$(".songlist .queue.realPlaylist").
-	sortable("option", { axis: false }).
-	filter(".song").
-	draggable({
-		connectToSortable: ".TFMPL",
-		revert: true,
-		helper: "clone",
-		stack: ".song"
-	});
 	this.songsCounter = setInterval(function() {
 		TFMPL.utils.songsCounter();
-	}, 15000)
+	}, 15000);
 	
 };
 
@@ -180,14 +171,23 @@ TFMPL.ui = {
 					activeClass: "activeClass",
 					hoverClass: "hoverClass",
 					accept: ".songlist .queue .song",
-					scope: "default",
-					helper: "clone",
+					tolerance: "pointer",
+					activate: function() {
+						$(".TFMPL .song").css({ opacity: 0.8 });
+					},
+					deactivate: function() {
+						setTimeout("$(\".TFMPL .song\").css({ opacity: 1 });", 750);
+						
+					},
 					drop: function( event, ui ) {
+						TFMPL.ui.cleanUp();
 						if (!$(".TFMPL .song:data('songData.fileId=" + ui.helper.data("songData").fileId + "')").length) {
-							TFMPL.ui.cleanUp();
-							$this = ui.helper.clone(true).cleanSong().appendTo(this);
+							$(this).effect('highlight',{ color: "#008300" }, 1000);
+							$this = ui.helper.clone(true).addSong().appendTo(this);
 							$(".TFMPL .song").removeClass("nth-child-even").filter(":even").addClass("nth-child-even");
 							TFMPL.playlist.update();
+						} else {
+							$(this).effect('highlight',{ color: "#FF0000" }, 1000);
 						}
 					}
 				}).
@@ -207,6 +207,10 @@ TFMPL.ui = {
 				});
 		}
 		
+		if (TFMPL.user.indicator) {
+			this.indicator();
+		}
+
 		var newest = TFMPL.utils.newest();
 		this.menu(newest);
 		this.load(newest);
@@ -230,9 +234,10 @@ TFMPL.ui = {
 			var songs = TFMPL.playlists[playlist].songs;
 			if (songs.length) {
 				for(var i in songs) {
-					$(".realPlaylist .song:data('songData.fileId="+ songs[i] +"')").clone(true).cleanSong().appendTo(".TFMPL");
+					$(".realPlaylist .song:data('songData.fileId="+ songs[i] +"')").clone(true).addSong().appendTo(".TFMPL");
 				}
 				$("#TFMPL dt").html(TFMPL.playlists[playlist].name);
+				$(".TFMPL .song").removeClass("nth-child-even").filter(":even").addClass("nth-child-even");
 			}
 			else {
 				this.empty();
@@ -305,6 +310,7 @@ TFMPL.ui = {
 			$("<div/>").addClass("tip").html("&bull; just type and press enter to save").appendTo(".TFMPL_SETTINGS .wrapper");
 			$("<div/>").addClass("subtitle").html("<a href=\"#\" class=\"mngBckRstr\">Backup / Restore</a>").appendTo(".TFMPL_SETTINGS");
 			$("<div/>").addClass("backup_restore").html("<b>Back Up</b><br/><textarea id=\"backup\">{\"preferences\":" + JSON.stringify(TFMPL.user) + ", \"playlists\":" + JSON.stringify(TFMPL.playlists) + "}</textarea><br/>copy this text and save it<br/><br/><b>Restore</b><br/><textarea id=\"restore\"></textarea><br/>paste your saved playlist and press enter<br/><br/><span id=\"response\"></span>").appendTo(".TFMPL_SETTINGS");
+			$("<div/>").addClass("indicator").html("Playlist indicator <input type=\"checkbox\" value=\"1\"" + (TFMPL.user.indicator ? " checked" : "") +"/>").appendTo(".TFMPL_SETTINGS");
 			
 			$(".TFMPL_SETTINGS").slideDown(800, "easeOutBounce");
 			$(".TFMPL_SETTINGS").promise().done(function() {
@@ -325,6 +331,14 @@ TFMPL.ui = {
 		this.cleanUp();
 		$("<div/>").addClass("TFMPL_EMPTY destroyable").appendTo("#TFMPL");
 		$(".TFMPL_EMPTY").show();
+	},
+	indicator: function() {
+		var allSongs = TFMPL.utils.allSongs();
+		for(var key in allSongs) {
+			if (!$(".realPlaylist .song:data('songData.fileId="+ allSongs[key] +"') .inTFMPL").length) {
+				$("<div/>").addClass("inTFMPL").html("&bull;").appendTo($(".realPlaylist .song:data('songData.fileId="+ allSongs[key] +"')"));
+			}
+		}
 	},
 	cleanUp: function(except) {
 		if ($(".TFMPL_WRAPPER").is(":visible")) $("#TFMPL dt").trigger("click");
@@ -378,6 +392,18 @@ TFMPL.utils = {
 		}
 		return size;
 	},
+	allSongs: function() {
+		TFMPL.log("utils.allSongs");
+		var allSongs = [], key;
+		for (key in TFMPL.playlists) {
+			if (TFMPL.playlists[key].songs.length) {
+				for(var i = 0;i<TFMPL.playlists[key].songs.length;i++) {
+					allSongs.push(TFMPL.playlists[key].songs[i]);
+				}
+			}
+		}
+		return allSongs;
+	},
 	totalPlaylists: function() {
 		TFMPL.log("utils.totalPlaylists");
 		return this.size(TFMPL.playlists);
@@ -429,6 +455,7 @@ TFMPL.user = {
 	userid: turntable.user.id,
 	songsCount: 0,
 	created: TFMPL.utils.timestamp(),
+	indicator: true,
 	version: this.version
 };
 
@@ -480,7 +507,6 @@ $("#TFMPL .dropdown dt").live("click", function(e) {
 	}
 	$(this).promise().done(function() {
 		if (!$("#TFMPL .TFMPL_PLAYLISTS").data("jsp")) $("#TFMPL .TFMPL_PLAYLISTS").jScrollPane({ hideFocus: true, verticalDragMinHeight: 16 });
-		//, verticalDragMaxHeight: 64
 	});
 	
 });
@@ -546,7 +572,7 @@ $("#TFMPL .TFMPL_SETTINGS .fields input").live("keydown", function(e) {
 	if(code == 13 && $(this).val() && ($(this).val() != $(this).data("value"))) {
 		if (TFMPL.playlist.save($(this).data("slug"), $(this).val())) {
 			$(this).data("value", $(this).val());
-			$(this).effect("highlight", { color: "#FF0044" }, 1000);
+			$(this).effect("highlight", { color: "#FF0000" }, 1000);
 			setTimeout(function() {
 				$(".TFMPL_SETTINGS .field").tsort(">input", { useVal:true });
 			}, 1000);
@@ -571,6 +597,16 @@ $("#TFMPL .TFMPL_SETTINGS .fields button").live("click", function(e) {
 	}
 });
 
+$("#TFMPL .TFMPL_SETTINGS .indicator input").live("click", function(e) {
+	TFMPL.user.indicator = $(this).is(":checked");
+	TFMPL.storage.save();
+	if(!$(this).is(":checked")) {
+		$(".realPlaylist .song .inTFMPL").remove();
+	} else {
+		TFMPL.ui.indicator();
+	}
+});
+
 /* Start
 -------------------- */
 
@@ -582,9 +618,14 @@ $().ready(function() {
 	}, 2500);
 });
 
-$.fn.cleanSong = function () {
+$.fn.addSong = function () {
 	return this.each(function () {
-		$(this).css({ position: "", top: "", left: "", zIndex: "auto" }).removeData("draggable").removeData("sortableItem").removeClass("topSong ui-draggable").find(".remove").unbind("click");
+		$(this).css({ position: "", top: "", left: "", zIndex: "auto" }).removeData("draggable").removeData("sortableItem").removeClass("topSong ui-draggable").find(".inTFMPL").remove().end().find(".remove").unbind("click");
+		if (TFMPL.user.indicator) {
+			if (!$(".realPlaylist .song:data('songData.fileId="+ $(this).data("songData").fileId +"') .inTFMPL").length) {
+				$("<div/>").addClass("inTFMPL").html("&bull;").appendTo($(".realPlaylist .song:data('songData.fileId="+ $(this).data("songData").fileId +"')"));
+			}
+		}
 	});
 };
 

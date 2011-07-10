@@ -147,8 +147,15 @@
 				font-weight: bold;
 				text-decoration: none; }
 		
+		#TFMPL .TFMPL_SETTINGS .indicator {
+			font-size: 12px; }
+			
+			#TFMPL .TFMPL_SETTINGS .indicator input {
+				vertical-align: middle;
+				margin-left: 4px; }
+		
 		#TFMPL .TFMPL_SETTINGS .fields {
-			height: 400px;
+			height: 375px;
 			margin-bottom: 4px;
 			opacity: 0;
 			overflow: hidden; }
@@ -285,6 +292,8 @@
 	#TFMPL #response {
 		color: #FF0000;
 		font-weight: bold; }
+		
+	#right-panel .inTFMPL { color: #C0C0C0; font-size: 22px; height: 10px; line-height: 12px; position: absolute; top: 2px; right: 20px; width: 10px;  }
 	
 		
 /*
