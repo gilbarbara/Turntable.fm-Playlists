@@ -13,7 +13,7 @@ C L A S S E S
 if (typeof(TFMPL) == "undefined") {
 	TFMPL = {
 		name: "Playlist Manager",
-		version: "0.900",
+		version: "0.910",
 		started: null,
 		userData: false,
 		lastSong: null,
