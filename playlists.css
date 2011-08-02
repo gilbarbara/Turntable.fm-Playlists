@@ -9,6 +9,7 @@
 	-webkit-box-shadow: 0 0 8px 2px #333;
 	background-color: #F7F7F7;
 	color: #555;
+	font-size: 1em;
 	position: absolute;
 	top: 99px;
 	width: 233px;
@@ -33,6 +34,9 @@
 			left: 8px;
 			top: 4px;
 			width: 16px; }
+			
+			#TFMPL .black-right-header .icon.syncing {
+				background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-sync.gif') no-repeat; }
  
 		#TFMPL .black-right-header .new {
 			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-new.png') no-repeat;
@@ -152,7 +156,8 @@
 			
 			#TFMPL .TFMPL_SETTINGS .indicator input {
 				vertical-align: middle;
-				margin-left: 4px; }
+				margin-right: 4px; }
+		
 		
 		#TFMPL .TFMPL_SETTINGS .fields {
 			height: 375px;
@@ -172,7 +177,7 @@
 			vertical-align: middle;
 			width: 16px; }
 			
-		#TFMPL .TFMPL_SETTINGS .field button {
+		#TFMPL .TFMPL_SETTINGS button {
 			-moz-border-radius: 2px;
 			-webkit-border-radius: 2px;
 			background-color: transparent;
@@ -199,6 +204,31 @@
 			font-style: italic;
 			margin-bottom: 16px; }
 			
+		#TFMPL .TFMPL_SETTINGS .dropbox, #TFMPL .TFMPL_SETTINGS .dropbox.on {
+			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/dropbox_synced.png') no-repeat 0 0;
+			cursor: pointer;
+			height: 33px;
+			margin: 8px 0;
+			width: 194px; }
+			
+			#TFMPL .TFMPL_SETTINGS .dropbox.off {
+			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/dropbox_connect.png') no-repeat 0 0; }
+			
+			#TFMPL .TFMPL_SETTINGS .dropbox_unlink {
+				margin: 4px 0;
+				text-align: right;
+				width: 194px; }
+				
+				#TFMPL .TFMPL_SETTINGS .dropbox_unlink a {
+					color: #CC3333;
+					text-decoration: none; }
+					
+				#TFMPL .TFMPL_SETTINGS .dropbox_unlink button {
+					margin: 0;
+					padding: 0 4px; }
+				
+				#TFMPL .TFMPL_SETTINGS .dropbox_unlink.off { display: none; }
+			
 		#TFMPL .TFMPL_SETTINGS .backup_restore {
 			font-size: 13px;
 			display: none; }
@@ -206,6 +236,23 @@
 		#TFMPL .TFMPL_SETTINGS .backup_restore textarea {
 			height: 60px;
 			width: 201px; }
+			
+		#TFMPL .TFMPL_SETTINGS #dropbox {
+			background: url("chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/ajax.gif") no-repeat 0 0;
+			display: none;
+			height: 16px;
+			margin-top: 6px;
+			padding-left: 20px;
+		}
+		
+		#TFMPL .TFMPL_SETTINGS #dropbox.syncing {
+			background: url("chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/sync.gif") no-repeat 0 0; }
+		
+		#TFMPL .TFMPL_SETTINGS #dropbox.success {
+			background: url("chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/success.png") no-repeat 0 0; }
+			
+		#TFMPL .TFMPL_SETTINGS #dropbox.error {
+			background: url("chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/error.png") no-repeat 0 0; }
  
 	#TFMPL .TFMPL_HELP {
 		background: #FEE49C url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/help.png') no-repeat;
@@ -279,6 +326,16 @@
  	#TFMPL.playlist-container .queueView .song .remove {
  		background-image: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/remove-button.png');
 		top: 4px; }
+		
+	#TFMPL .dropboxNew {
+		background-image: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/dropbox_new.png');
+		display: none;
+		height: 133px;
+		left: 0;
+		position: absolute;
+		top: 55px;
+		width: 233px;
+	}
  
 	#TFMPL .activeClass { background-color: #FFA; }
 	#TFMPL .hoverClass { background-color: #FABA43; }

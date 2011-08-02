@@ -13,13 +13,17 @@ C L A S S E S
 if (typeof(TFMPL) == "undefined") {
 	TFMPL = {
 		name: "Playlist Manager",
-		version: "0.910",
+		version: "0.953",
 		started: null,
 		userData: false,
 		lastSong: null,
 		songsCounter: null,
 		showLog: false,
-		playlists: {}
+		playlists: {},
+		dropboxTimer: false,
+		dropboxNew: false,
+		oauth_token: null,
+		oauth_token_secret: null
 	};
 }
 
@@ -32,60 +36,12 @@ TFMPL.start = function() {
 	this.started = true;
 	this.storage.load();
 	this.ui.init();
+	this.dropbox.timer();
 	
 	this.songsCounter = setInterval(function() {
 		TFMPL.utils.songsCounter();
 	}, 15000);
 	
-};
-
-TFMPL.storage = {
-	support: function() {
-		TFMPL.log("storage.support");
-		try {
-			return !!localStorage.getItem;
-		} catch(e) {
-			return false;
-		}
-	}(),
-	save: function() {
-		TFMPL.log("storage.save");
-		
-		TFMPL.user.songsCount = TFMPL.utils.songsCounter();
-		if (TFMPL.utils.size(TFMPL.playlists)) {
-			localStorage.setItem("TFMPL", "{\"preferences\":" + JSON.stringify(TFMPL.user) + ", \"playlists\":" + JSON.stringify(TFMPL.playlists) + "}");
-		}
-	},
-	load: function() {
-		TFMPL.log("storage.load");
-		var storage = localStorage.getItem("TFMPL");
-		if(storage !== "undefined" && storage !== null) {
-			storage = JSON.parse(storage);
-			TFMPL.playlists = storage.playlists;
-			$.extend(TFMPL.user, storage.preferences);
-			TFMPL.userData = true;
-			
-			//fixes
-			if (TFMPL.user.version < 0.820) {
-				TFMPL.user.songsCount = 0;
-			}
-		}
-	},
-	restore: function(string) {
-		var restore = JSON.parse(string);
-		if (typeof(restore) === "object") {
-			TFMPL.user = restore.preferences;
-			TFMPL.playlists = restore.playlists;
-			TFMPL.ui.menu();
-			this.save();
-		}
-		
-		return (typeof(restore) === "object" ? "Restored successfully!" : "String not valid");
-	},
-	destroy: function() {
-		TFMPL.log("storage.destroy");
-		localStorage.setItem("TFMPL");
-	}
 };
 
 TFMPL.playlist = {
@@ -127,7 +83,7 @@ TFMPL.playlist = {
 	save: function(slug, newName) {
 		if (!slug || !newName) return TFMPL.log("fail");
 		
-		TFMPL.playlists[slug].name = newName;
+		TFMPL.playlists[slug].name = newName.replace(/'/g, "&#39;");
 		TFMPL.storage.save();
 		TFMPL.ui.menu();
 		
@@ -208,12 +164,24 @@ TFMPL.ui = {
 		}
 		
 		if (TFMPL.user.indicator) {
-			this.indicator();
+			setTimeout("TFMPL.ui.indicator();", 6000);
 		}
 
 		var newest = TFMPL.utils.newest();
 		this.menu(newest);
-		this.load(newest);
+		setTimeout(function() {
+			if ($.cookie('TFMPLdropbox')) {
+				var OAuth = $.cookie("TFMPLdropbox").split("&");
+				TFMPL.oauth_token = OAuth[0];
+				TFMPL.oauth_token_secret = OAuth[1];
+				TFMPL.ui.settings("1");
+				TFMPL.dropbox.callback();	
+			}
+			else if (TFMPL.userData) {
+				TFMPL.ui.load(newest);
+			}
+		}, 2000);
+		
 		if (!newest) {
 			$(".TFMPL").droppable("option", "disabled", true);
 			if (!TFMPL.userData) {
@@ -236,11 +204,19 @@ TFMPL.ui = {
 				for(var i in songs) {
 					$(".realPlaylist .song:data('songData.fileId="+ songs[i] +"')").clone(true).addSong().appendTo(".TFMPL");
 				}
-				$("#TFMPL dt").html(TFMPL.playlists[playlist].name);
+				$("#TFMPL dt").html(TFMPL.playlists[playlist].name + " (" + TFMPL.playlists[playlist].songs.length + ")");
 				$(".TFMPL .song").removeClass("nth-child-even").filter(":even").addClass("nth-child-even");
 			}
 			else {
 				this.empty();
+			}
+			if (TFMPL.dropboxNew) {
+				$("<div/>").addClass("dropboxNew").appendTo("#TFMPL").slideDown();
+				$(".dropboxNew").click(function() {
+					$(this).remove();
+					TFMPL.ui.settings("1");
+				})
+				TFMPL.dropboxNew = false;
 			}
 		}
 		else {
@@ -255,7 +231,7 @@ TFMPL.ui = {
 		
 		var loop = "<div class=\"TFMPL_WRAPPER\"><div class=\"TFMPL_PLAYLISTS\"><ul>";
 		for(var i in TFMPL.playlists) {
-			loop += "<li data-playlist=\"" + i + "\">" + TFMPL.playlists[i].name + "</li>";
+			loop += "<li data-playlist=\"" + i + "\">" + TFMPL.playlists[i].name + " (" + TFMPL.playlists[i].songs.length + ")</li>";
 		}
 		
 		loop += "</ul></div></div>";
@@ -293,7 +269,7 @@ TFMPL.ui = {
 		}
 
 	},
-	settings: function() {
+	settings: function(selected) {
 		TFMPL.log("ui.settings");
 		this.cleanUp("TFMPL_SETTINGS");
 		if (!$(".TFMPL_SETTINGS:visible").length) {
@@ -307,15 +283,28 @@ TFMPL.ui = {
 			}
 			$("<div/>").addClass("fields").html(fields).appendTo(".TFMPL_SETTINGS .wrapper");
 			$(".TFMPL_SETTINGS .field").tsort(">input", { useVal:true });
+			
 			$("<div/>").addClass("tip").html("&bull; just type and press enter to save").appendTo(".TFMPL_SETTINGS .wrapper");
-			$("<div/>").addClass("subtitle").html("<a href=\"#\" class=\"mngBckRstr\">Backup / Restore</a>").appendTo(".TFMPL_SETTINGS");
-			$("<div/>").addClass("backup_restore").html("<b>Back Up</b><br/><textarea id=\"backup\">{\"preferences\":" + JSON.stringify(TFMPL.user) + ", \"playlists\":" + JSON.stringify(TFMPL.playlists) + "}</textarea><br/>copy this text and save it<br/><br/><b>Restore</b><br/><textarea id=\"restore\"></textarea><br/>paste your saved playlist and press enter<br/><br/><span id=\"response\"></span>").appendTo(".TFMPL_SETTINGS");
-			$("<div/>").addClass("indicator").html("Playlist indicator <input type=\"checkbox\" value=\"1\"" + (TFMPL.user.indicator ? " checked" : "") +"/>").appendTo(".TFMPL_SETTINGS");
+			$("<div/>").addClass("subtitle").html("<a href=\"#\" class=\"mngBckRstr\">Backup / Restore</a>").appendTo(".TFMPL_SETTINGS");			
+			$("<div/>").addClass("backup_restore").html((TFMPL.user.token ? "<div class=\"dropbox on\"></div><div class=\"synced\"></div>" : "Sync your playlists with Dropbox<br/><div class=\"dropbox off\"></div>") + "<div id=\"dropbox\"></div><div class=\"dropbox_unlink" + (!TFMPL.user.token ? " off" : "") +"\"><button>delete - </button><a href=\"#\">unlink dropbox</a></div><br/>Or you can copy/paste<br/><br/><b>Back Up</b><br/><textarea id=\"backup\">{\"playlists\":" + JSON.stringify(TFMPL.playlists) + ", \"preferences\":" + JSON.stringify(TFMPL.user) + "}</textarea><br/>copy this text and save it<br/><br/><b>Restore</b><br/><textarea id=\"restore\"></textarea><br/>paste your saved playlist and press enter<br/><span id=\"response\"></span><br/><br/>").appendTo(".TFMPL_SETTINGS");
+			$("<div/>").addClass("indicator").html("<input type=\"checkbox\" value=\"1\"" + (TFMPL.user.indicator ? " checked" : "") +"/>Playlist indicator (slow)").appendTo(".TFMPL_SETTINGS");
+			
+			if (TFMPL.user.lastSync) {
+				var currentTime = new Date(TFMPL.user.lastSync * 1000);
+				var minutes = currentTime.getMinutes()
+				if (minutes < 10) minutes = "0" + minutes;
+				$("#TFMPL .synced").html("Last sync: " + (currentTime.getMonth() + 1) + "/" + currentTime.getDate() + "/" + currentTime.getFullYear() + " " + currentTime.getHours() + ":" + minutes + (currentTime.getHours() > 11 ? " PM" : " AM"));
+			}
+			else {
+				$("#TFMPL .synced").html("Last sync: never");
+			}
 			
 			$(".TFMPL_SETTINGS").slideDown(800, "easeOutBounce");
 			$(".TFMPL_SETTINGS").promise().done(function() {
 				$(".TFMPL_SETTINGS .fields").jScrollPane({ hideFocus: true, verticalDragMinHeight: 16 }).animate({ opacity: 1});
+				//$(".TFMPL_SETTINGS .wrapper").slideUp();
 			});
+			if (selected) $("a.mngBckRstr").trigger("click");
 		}
 	},
 	help: function() {
@@ -333,10 +322,11 @@ TFMPL.ui = {
 		$(".TFMPL_EMPTY").show();
 	},
 	indicator: function() {
+		TFMPL.log("ui.indicator");
 		var allSongs = TFMPL.utils.allSongs();
 		for(var key in allSongs) {
 			if (!$(".realPlaylist .song:data('songData.fileId="+ allSongs[key] +"') .inTFMPL").length) {
-				$("<div/>").addClass("inTFMPL").html("&bull;").appendTo($(".realPlaylist .song:data('songData.fileId="+ allSongs[key] +"')"));
+				$(".realPlaylist .song:data('songData.fileId="+ allSongs[key] +"')").append("<div class=\"inTFMPL\">&bull;</div>");
 			}
 		}
 	},
@@ -359,6 +349,244 @@ TFMPL.ui = {
 	}
 };
 
+TFMPL.dropbox = {
+	init: function(request_auth) {
+		TFMPL.log("dropbox.init");
+		if (TFMPL.oauth_token) return true;
+		return $.ajax({
+			url: "https://query.yahooapis.com/v1/public/yql",
+			type: "GET",
+			async: true,
+			jsonp: "callback",
+			data: {
+				env: "store://kollectiv.org/dropbox_OAuth",
+				q: "SELECT * FROM dropbox WHERE uri = 'https://api.dropbox.com/0/oauth/request_token'",
+				format: "json"
+			},
+			success: function(data){
+				var response;
+				var response = data.query.results.result;
+				if (typeof(response) == "string") {
+					var oAuthTokens = response.split("&");
+					for (var key in oAuthTokens) {
+						oAuthSplit = oAuthTokens[key].split("=");
+						TFMPL[oAuthSplit[0]] = $.trim(oAuthSplit[1]);
+					}
+				} else {
+					$("#dropbox").removeAttr("class").addClass('error').html(response.error).show();
+				}
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				$("#dropbox").removeAttr("class").addClass('error').html(textStatus + " - " + errorThrown).show();
+			},
+			complete: function() {
+				if (request_auth) {
+					if (TFMPL.oauth_token) {
+						$.cookie("TFMPLdropbox", TFMPL.oauth_token + "&" + TFMPL.oauth_token_secret, { path: '/' });
+						location.href = "https://www.dropbox.com/0/oauth/authorize?oauth_token=" + TFMPL.oauth_token + "&oauth_callback="+location.href;
+					}
+					else {
+						setTimeout(function() {
+							$("#TFMPL #dropbox").removeAttr("class").addClass('error').html("trying again").show();
+							$("#TFMPL .TFMPL_SETTINGS .dropbox.off").trigger("click");
+						},2000);
+					}
+				}
+			}
+		}).responseText;
+	},
+	callback: function() {
+		TFMPL.log("dropbox.callback");
+		$("#dropbox").removeAttr("class").html("authorizing").show();
+		return $.ajax({
+			url: "https://query.yahooapis.com/v1/public/yql",
+			type: "GET",
+			jsonp: "callback",
+			data: {
+				env: "store://kollectiv.org/dropbox_OAuth",
+				q: "SELECT * FROM dropbox WHERE uri = 'https://api.dropbox.com/0/oauth/access_token?oauth_token=" + TFMPL.oauth_token + "'",
+				format: "json"
+			},
+			success: function(data) {
+				var response = data.query.results.result;
+				if (typeof(response) == "string") {
+					var oAuthTokens = response.split("&");
+					for (var key in oAuthTokens) {
+						oAuthSplit = oAuthTokens[key].split("=");
+						if(oAuthSplit[0] == "oauth_token") TFMPL.user.token = $.trim(oAuthSplit[1]);
+						else TFMPL.user.tokenSecret = $.trim(oAuthSplit[1]);
+					}
+					if (TFMPL.user.token) {
+						$("#dropbox").removeAttr("class").addClass("success").html("success").show();
+						$("#TFMPL .dropbox").removeClass("off").addClass("on");
+						TFMPL.storage.save();
+						$.cookie("TFMPLdropbox", null);
+						setTimeout(function() {
+							$("#dropbox").removeAttr("class").addClass("success").html("success").show();
+							TFMPL.dropbox.restore();
+						}, 2000)
+					}
+				}
+				else {
+					$("#dropbox").removeAttr("class").addClass('error').html(response.error).show();
+				}
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				$("#dropbox").removeAttr("class").html(textStatus + " - " + errorThrown).show();
+			}
+		}).responseText;
+	},
+	restore: function() {
+		TFMPL.log("dropbox.restore");
+		
+		$("#dropbox").removeAttr("class").addClass("syncing").html("searching for backup").show();
+		var request = $.ajax({
+			url: "http://query.yahooapis.com/v1/public/yql",
+			type: "GET",
+			jsonp: "callback",
+			data: {
+				env: "store://kollectiv.org/dropbox_OAuth",
+				q: 'SELECT * FROM dropbox WHERE uri = \'http://api-content.dropbox.com/0/files/dropbox/playlistsBkp.json\' AND token=\'' + TFMPL.user.token + '\' AND tokenSecret=\'' + TFMPL.user.tokenSecret + '\'',
+				format: 'json'
+			},
+			success: function(data){
+				var response = JSON.parse(data.query.results.result);
+				if(response.error) {
+					$("#dropbox").removeAttr("class").addClass('syncing').html("backup not found. let's sync!").show();
+					TFMPL.dropbox.sync();
+				} else {
+					if(typeof(response) == "object") {
+						$("#dropbox").removeAttr("class").addClass('success').html("backup restored!").show();
+						TFMPL.playlists = response.playlists;
+						if (TFMPL.user.token) response.preferences.token = TFMPL.user.token;
+						if (TFMPL.user.tokenSecret) response.preferences.tokenSecret = TFMPL.user.tokenSecret;
+						$.extend(TFMPL.user, response.preferences);
+						TFMPL.userData = true;
+						TFMPL.storage.save();
+						var newest = TFMPL.utils.newest();
+						TFMPL.ui.menu(newest);
+					}
+				}
+			},
+			error: function(jqXHR, textStatus,errorThrown) {
+				$("#dropbox").removeAttr("class").addClass('error').html(textStatus + " - " + errorThrown).show();
+			}
+		});
+		return request;
+	},
+	sync: function(autoSync) {
+		TFMPL.log("dropbox.sync");
+		TFMPL.user.songsCount = TFMPL.utils.songsCounter();
+		TFMPL.user.version = TFMPL.version;
+		
+		playlistsBkp = ('{"playlists":' + JSON.stringify(TFMPL.playlists) + ', "preferences":' + JSON.stringify(TFMPL.user) + '}').replace(/'/g, "&#39;");
+		
+		
+		
+		if (!autoSync || (autoSync && TFMPL.utils.newest(true) > TFMPL.user.lastSync)) {
+			if (!$("#TFMPL .TFMPL_SETTINGS:visible").length) $("#TFMPL .black-right-header .icon").addClass('syncing');
+			var request = $.ajax({
+				url: "http://query.yahooapis.com/v1/public/yql",
+				type: "POST",
+				jsonp: "callback",
+				data: {
+					env: "store://kollectiv.org/dropbox_OAuth",
+					q: 'SELECT * FROM dropbox WHERE uri = \'http://api-content.dropbox.com/0/files/dropbox?file=playlistsBkp.json\' AND token=\'' + TFMPL.user.token + '\' AND tokenSecret=\'' + TFMPL.user.tokenSecret + '\' AND playlist = \'' + playlistsBkp + '\' AND method = \'POST\'',
+					format: 'json'
+				},
+				success: function(data){
+					var response = JSON.parse(data.query.results.result);
+					if(response.error) {
+						if ($("#TFMPL .TFMPL_SETTINGS:visible").length) $("#dropbox").removeAttr("class").addClass('error').html(response.error).show();
+					} else {
+						if (response.result == "winner!") {
+							TFMPL.user.lastSync = TFMPL.utils.timestamp();
+							var currentTime = new Date();
+							var minutes = currentTime.getMinutes()
+							if (minutes < 10) minutes = "0" + minutes;
+							if ($("#TFMPL .TFMPL_SETTINGS:visible").length) {
+								$("#TFMPL .synced").html("Last sync: " + (currentTime.getMonth() + 1) + "/" + currentTime.getDate() + "/" + currentTime.getFullYear() + " " + currentTime.getHours() + ":" + minutes + (currentTime.getHours() > 11 ? " PM" : " AM"));
+								$("#dropbox").removeAttr("class").addClass("success").html("sync completed").show();
+							}
+							else {
+								$("#TFMPL .black-right-header .icon").removeClass('syncing');
+							}
+						}
+					}
+				},
+				error: function(jqXHR, textStatus,errorThrown) {
+					$("#dropbox").removeAttr("class").addClass('error').html(textStatus + " - " + errorThrown).show();
+				}
+			});
+		}
+		return request;
+	},
+	timer: function() {
+		TFMPL.log("dropbox.timer");
+		
+		if(TFMPL.user.token) {
+			TFMPL.log("starting timer");
+			this.dropboxTimer = setInterval(function() {
+				TFMPL.dropbox.sync(true);
+			}, 60000);
+		}
+		
+	}
+};
+
+TFMPL.storage = {
+	support: function() {
+		TFMPL.log("storage.support");
+		try {
+			return !!localStorage.getItem;
+		} catch(e) {
+			return false;
+		}
+	},
+	save: function() {
+		TFMPL.log("storage.save");
+		
+		TFMPL.user.songsCount = TFMPL.utils.songsCounter();
+		TFMPL.user.version = TFMPL.version;
+		localStorage.setItem("TFMPL", "{\"playlists\":" + JSON.stringify(TFMPL.playlists) + ", \"preferences\":" + JSON.stringify(TFMPL.user) + "}");
+	},
+	load: function() {
+		TFMPL.log("storage.load");
+		var storage = localStorage.getItem("TFMPL");
+		if(storage !== "undefined" && storage !== null) {
+			storage = JSON.parse(storage);
+			TFMPL.playlists = storage.playlists;
+			$.extend(TFMPL.user, storage.preferences);
+			TFMPL.userData = true;
+			
+			//fixes
+			if (TFMPL.user.version < 0.820) {
+				TFMPL.user.songsCount = 0;
+			}
+			if (TFMPL.user.version < 0.952) {
+				TFMPL.user.indicator = false;
+				TFMPL.dropboxNew = true;
+			}
+		}
+	},
+	restore: function(string) {
+		var restore = JSON.parse(string);
+		if (typeof(restore) === "object") {
+			TFMPL.user = restore.preferences;
+			TFMPL.playlists = restore.playlists;
+			TFMPL.ui.menu();
+			this.save();
+		}
+		
+		return (typeof(restore) === "object" ? "Restored successfully!" : "String not valid");
+	},
+	destroy: function() {
+		TFMPL.log("storage.destroy");
+		localStorage.setItem("TFMPL");
+	}
+};
+
+
 TFMPL.utils = {
 	guid: function(val) {
 		TFMPL.log("utils.guid");
@@ -370,7 +598,7 @@ TFMPL.utils = {
 		}
 		return result;
 	},
-	newest: function() {
+	newest: function(time) {
 		TFMPL.log("utils.newest");
 		var largest = {
 			key: null,
@@ -382,7 +610,7 @@ TFMPL.utils = {
 				largest.val = TFMPL.playlists[i].updated;
 			}
 		}
-		return largest.key;
+		return (time ? largest.val : largest.key);
 	},
 	size: function(obj) {
 		TFMPL.log("utils.size");
@@ -455,8 +683,11 @@ TFMPL.user = {
 	userid: turntable.user.id,
 	songsCount: 0,
 	created: TFMPL.utils.timestamp(),
-	indicator: true,
-	version: this.version
+	indicator: false,
+	version: this.version,
+	token: null,
+	tokenSecret: null,
+	lastSync: null
 };
 
 /*////////////////////
@@ -607,6 +838,33 @@ $("#TFMPL .TFMPL_SETTINGS .indicator input").live("click", function(e) {
 	}
 });
 
+$("#TFMPL .TFMPL_SETTINGS .dropbox.off").live("click", function(e) {
+	e.preventDefault();
+	$("#TFMPL #dropbox").removeAttr("class").html("connecting to dropbox. wait").show();
+	TFMPL.dropbox.init(true);
+});
+
+$("#TFMPL .TFMPL_SETTINGS .dropbox.on").live("click", function(e) {
+	e.preventDefault();
+	$("#TFMPL #dropbox").removeAttr("class").addClass('syncing').html("syncing").show();
+	TFMPL.dropbox.sync();
+});
+
+$("#TFMPL .TFMPL_SETTINGS .dropbox_unlink a").live("click", function(e) {
+	e.preventDefault();
+	$("#TFMPL .TFMPL_SETTINGS .dropbox_unlink button").show();
+});
+
+$("#TFMPL .TFMPL_SETTINGS .dropbox_unlink button").live("click", function(e) {
+	e.preventDefault();
+	TFMPL.user.token = TFMPL.user.tokenSecret = TFMPL.user.lastSync = null;
+	$("#TFMPL .dropbox").removeClass("on").addClass("off");
+	$("#TFMPL .synced").hide();
+	$("#TFMPL .dropbox_unlink").hide();
+});
+
+
+
 /* Start
 -------------------- */
 
@@ -708,6 +966,47 @@ $.fn.populate = function (value) {
 			}
 		});
 	});
+};
+
+/**
+ * jQuery Cookie plugin
+ *
+ * Copyright (c) 2010 Klaus Hartl (stilbuero.de)
+ * Dual licensed under the MIT and GPL licenses:
+ * http://www.opensource.org/licenses/mit-license.php
+ * http://www.gnu.org/licenses/gpl.html
+ */
+jQuery.cookie = function (key, value, options) {
+    
+    // key and at least value given, set cookie...
+    if (arguments.length > 1 && String(value) !== "[object Object]") {
+        options = jQuery.extend({}, options);
+
+        if (value === null || value === undefined) {
+            options.expires = -1;
+        }
+
+        if (typeof options.expires === 'number') {
+            var days = options.expires, t = options.expires = new Date();
+            t.setDate(t.getDate() + days);
+        }
+        
+        value = String(value);
+        
+        return (document.cookie = [
+            encodeURIComponent(key), '=',
+            options.raw ? value : encodeURIComponent(value),
+            options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+            options.path ? '; path=' + options.path : '',
+            options.domain ? '; domain=' + options.domain : '',
+            options.secure ? '; secure' : ''
+        ].join(''));
+    }
+
+    // key and possibly options given, get cookie...
+    options = value || {};
+    var result, decode = options.raw ? function (s) { return s; } : decodeURIComponent;
+    return (result = new RegExp('(?:^|; )' + encodeURIComponent(key) + '=([^;]*)').exec(document.cookie)) ? decode(result[1]) : null;
 };
 
 /*
