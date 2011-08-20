@@ -46,8 +46,9 @@ TFMPL.start = function() {
 	
 	this.songsCounter = setInterval(function() {
 		TFMPL.utils.songsCounter();
-	}, 15000);
-	jQuery.tinysort.defaults.order = "asc";
+	}, 15 * 1000);
+	
+	$.tinysort.defaults.order = "asc";
 };
 
 TFMPL.playlist = {
@@ -186,7 +187,7 @@ TFMPL.ui = {
 			else if (TFMPL.userData) {
 				TFMPL.ui.load(newest);
 			}
-		}, 2000);
+		}, 4 * 1000);
 		
 		if (!newest) {
 			$(".TFMPL").droppable("option", "disabled", true);
@@ -210,14 +211,9 @@ TFMPL.ui = {
 				for(var i in songs) {
 					$(".realPlaylist .song:data('songData.fileId="+ songs[i] +"')").clone(true).addSong().appendTo(".TFMPL");
 				}
-				TFMPL.log("ui.load");
-				$("#TFMPL dt").html(TFMPL.playlists[playlist].name + " (" + TFMPL.playlists[playlist].songs.length + ")" + " <div class=\"desc\"></div><div class=\"asc\"></div>");
-				/* hack to show background image because it must be inline not block to position correctly */
-				var showtext = '&nbsp;&nbsp;&nbsp;&nbsp;';
-				$("#TFMPL dt .desc").html(showtext);
-				$("#TFMPL dt .asc").html(showtext);
-				$("#TFMPL dt .asc").hide();
+				$("#TFMPL dt").html("<span class=\"sort\" data-sort=\"asc\"></span><span class=\"title\">" + TFMPL.playlists[playlist].name + " (" + TFMPL.playlists[playlist].songs.length + ")</span>");
 				$(".TFMPL .song").removeClass("nth-child-even").filter(":even").addClass("nth-child-even");
+				$("#TFMPL .TFMPL").sortable("option", "disabled", false);
 			}
 			else {
 				this.empty();
@@ -237,10 +233,9 @@ TFMPL.ui = {
 	},
 	sortPlaylist: function(attribute) {
 		TFMPL.log("ui.sortPlaylist");
-		so = $("#TFMPL dt .asc").is(":visible")  ? "desc" : "asc";
-		$("#TFMPL dt .desc, #TFMPL dt .asc").toggle();
-		TFMPL.log("sortorder = " + so);
-		$(".TFMPL .song").tsort('',{order:so});
+		so = $("#TFMPL dt .sort").data("sort");
+		$("#TFMPL dt .sort").data("sort", ($("#TFMPL dt .sort").data("sort") == "asc" ? "desc" : "asc"));
+		$(".TFMPL .song").tsort('',{ order: so });
 		$(".TFMPL .song").removeClass("nth-child-even").filter(":even").addClass("nth-child-even");
 		return true;
 	},
@@ -750,21 +745,23 @@ $("#TFMPL .black-right-header").live("dblclick", function() {
 /* Menu
 -------------------- */
 
-$("#TFMPL .dropdown dt").live("click", function(e) {
+$("#TFMPL .dropdown dt .title").live("mouseover", function() {
+	$("#TFMPL .dropdown dt").css({ backgroundColor: "#FABA43" });
+}).live("mouseout", function() {
+	$("#TFMPL .dropdown dt").css({ backgroundColor: "" });
+}).live("click", function(e) {
 	e.preventDefault();
 	if (!$("#TFMPL .TFMPL_PLAYLISTS:visible").length) {
-	    $("#TFMPL dt .desc").addClass("disabled");
-    	$("#TFMPL dt .asc").addClass("disabled");
-		$(this).closest(".dropdown").find("dd .TFMPL_WRAPPER").stop().animate({ height: "toggle" }, 800, "easeOutBounce");
+	    $("#TFMPL dt .sort").animate({ width: "toogle" });
+		$("#TFMPL dt .sort_menu").hide();
+		$(this).closest(".dropdown").find("dd .TFMPL_WRAPPER").animate({ height: "toggle" }, 800, "easeOutBounce");
 	} else {
-    	$("#TFMPL dt .desc").removeClass("disabled");
-    	$("#TFMPL dt .asc").removeClass("disabled");
-		$(this).closest(".dropdown").find("dd .TFMPL_WRAPPER").stop().animate({ height: "toggle" });
+    	$("#TFMPL dt .sort").animate({ width: "toogle" });
+		$(this).closest(".dropdown").find("dd .TFMPL_WRAPPER").animate({ height: "toggle" });
 	}
 	$(this).promise().done(function() {
 		if (!$("#TFMPL .TFMPL_PLAYLISTS").data("jsp")) $("#TFMPL .TFMPL_PLAYLISTS").jScrollPane({ hideFocus: true, verticalDragMinHeight: 16 });
 	});
-	
 });
 					
 $("#TFMPL .dropdown dd ul li").live("click", function(e) {
@@ -774,7 +771,7 @@ $("#TFMPL .dropdown dd ul li").live("click", function(e) {
 	var playlist = $this.data("playlist");
 	
 	if (playlist){
-		$this.closest(".dropdown").find("dt").html($this.text()).end().find("dd .TFMPL_WRAPPER").hide();
+		$this.closest(".dropdown").find("dt .title").html($this.text()).end().find("dd .TFMPL_WRAPPER").hide();
 		TFMPL.ui.load(playlist);
 	}
 });
@@ -787,16 +784,11 @@ $("#TFMPL .TFMPL .remove").live("click", function() {
 	TFMPL.playlist.update();
 });
 
-$("#TFMPL dt .desc:not(.disabled)").live("click", function(e) {
-    e.stopPropagation();
+$("#TFMPL dt .sort").live("click", function(e) {
+    e.preventDefault();
+	$("#TFMPL .TFMPL").sortable("option", "disabled", true);
 	TFMPL.ui.sortPlaylist('');
-	TFMPL.playlist.update();
-});
-
-$("#TFMPL dt .asc:not(.disabled)").live("click", function(e) {
-    e.stopPropagation();
-	TFMPL.ui.sortPlaylist('');
-	TFMPL.playlist.update();
+	//TFMPL.playlist.update();
 });
 
 /* New Playlist
