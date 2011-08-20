@@ -4,7 +4,13 @@
  * https://chrome.google.com/webstore/detail/eimhdmlhdgmboegnmecdnfbmdmhdoool
  *
  * 2011 * Gil Barbara
-*/
+ *
+ * Playlist sorting hacked by Miles Lightwood of TeamTeamUSA m@teamteamusa.com (aka Steppin' Lazor of Great Minds Crew)
+ * TODO:
+ * Store playlist sort order so that correct indicator is displayed when reloading playlist
+ * Sort by artist name
+ *
+ */
 
 /*////////////////////
 C L A S S E S
@@ -13,7 +19,7 @@ C L A S S E S
 if (typeof(TFMPL) == "undefined") {
 	TFMPL = {
 		name: "Playlist Manager",
-		version: "0.953",
+		version: "0.954",
 		started: null,
 		userData: false,
 		lastSong: null,
@@ -41,7 +47,7 @@ TFMPL.start = function() {
 	this.songsCounter = setInterval(function() {
 		TFMPL.utils.songsCounter();
 	}, 15000);
-	
+	jQuery.tinysort.defaults.order = "asc";
 };
 
 TFMPL.playlist = {
@@ -204,7 +210,13 @@ TFMPL.ui = {
 				for(var i in songs) {
 					$(".realPlaylist .song:data('songData.fileId="+ songs[i] +"')").clone(true).addSong().appendTo(".TFMPL");
 				}
-				$("#TFMPL dt").html(TFMPL.playlists[playlist].name + " (" + TFMPL.playlists[playlist].songs.length + ")");
+				TFMPL.log("ui.load");
+				$("#TFMPL dt").html(TFMPL.playlists[playlist].name + " (" + TFMPL.playlists[playlist].songs.length + ")" + " <div class=\"desc\"></div><div class=\"asc\"></div>");
+				/* hack to show background image because it must be inline not block to position correctly */
+				var showtext = '&nbsp;&nbsp;&nbsp;&nbsp;';
+				$("#TFMPL dt .desc").html(showtext);
+				$("#TFMPL dt .asc").html(showtext);
+				$("#TFMPL dt .asc").hide();
 				$(".TFMPL .song").removeClass("nth-child-even").filter(":even").addClass("nth-child-even");
 			}
 			else {
@@ -222,6 +234,15 @@ TFMPL.ui = {
 		else {
 			this.create();
 		}
+	},
+	sortPlaylist: function(attribute) {
+		TFMPL.log("ui.sortPlaylist");
+		so = $("#TFMPL dt .asc").is(":visible")  ? "desc" : "asc";
+		$("#TFMPL dt .desc, #TFMPL dt .asc").toggle();
+		TFMPL.log("sortorder = " + so);
+		$(".TFMPL .song").tsort('',{order:so});
+		$(".TFMPL .song").removeClass("nth-child-even").filter(":even").addClass("nth-child-even");
+		return true;
 	},
 	menu: function(selected) {
 		TFMPL.log("ui.menu");
@@ -732,8 +753,12 @@ $("#TFMPL .black-right-header").live("dblclick", function() {
 $("#TFMPL .dropdown dt").live("click", function(e) {
 	e.preventDefault();
 	if (!$("#TFMPL .TFMPL_PLAYLISTS:visible").length) {
+	    $("#TFMPL dt .desc").addClass("disabled");
+    	$("#TFMPL dt .asc").addClass("disabled");
 		$(this).closest(".dropdown").find("dd .TFMPL_WRAPPER").stop().animate({ height: "toggle" }, 800, "easeOutBounce");
 	} else {
+    	$("#TFMPL dt .desc").removeClass("disabled");
+    	$("#TFMPL dt .asc").removeClass("disabled");
 		$(this).closest(".dropdown").find("dd .TFMPL_WRAPPER").stop().animate({ height: "toggle" });
 	}
 	$(this).promise().done(function() {
@@ -759,6 +784,18 @@ $("#TFMPL .dropdown dd ul li").live("click", function(e) {
 
 $("#TFMPL .TFMPL .remove").live("click", function() {
 	$(this).parent().remove();
+	TFMPL.playlist.update();
+});
+
+$("#TFMPL dt .desc:not(.disabled)").live("click", function(e) {
+    e.stopPropagation();
+	TFMPL.ui.sortPlaylist('');
+	TFMPL.playlist.update();
+});
+
+$("#TFMPL dt .asc:not(.disabled)").live("click", function(e) {
+    e.stopPropagation();
+	TFMPL.ui.sortPlaylist('');
 	TFMPL.playlist.update();
 });
 
