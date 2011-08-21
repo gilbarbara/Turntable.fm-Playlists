@@ -1,7 +1,7 @@
 {
 	"name": "Turntable.fm Playlist Manager",
-	"version": "0.954",
-	"description": "Add a playlist manager to turntable.fm - now with sorting!",
+	"version": "0.960",
+	"description": "Add custom playlists to turntable.fm!",
 	"background_page": "background.html",
 	"content_scripts": [
 		{

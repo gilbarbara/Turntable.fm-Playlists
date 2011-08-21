@@ -3,8 +3,8 @@
  * https://github.com/gilbarbara/Turntable.fm-Playlists
  * https://chrome.google.com/webstore/detail/eimhdmlhdgmboegnmecdnfbmdmhdoool
  *
- * Date: 2011-06-24
- * Version: 0.954
+ * Date: 2011-08-21
+ * Version: 0.960
  * Author: Gil Barbara <gilbarbara@gmail.com>
  * Copyright (C): 2011
  *
@@ -34,7 +34,7 @@ C L A S S E S
 if (typeof(TFMPL) == "undefined") {
 	TFMPL = {
 		name: "Playlist Manager",
-		version: "0.954",
+		version: "0.960",
 		started: null,
 		userData: false,
 		lastSong: null,
@@ -298,7 +298,7 @@ TFMPL.ui = {
 			$("<div/>").addClass("version").html("version: " + TFMPL.version).appendTo(".TFMPL_INFO");
 			$("<div/>").addClass("links").html("site: <a href=\"https://chrome.google.com/webstore/detail/eimhdmlhdgmboegnmecdnfbmdmhdoool\" target=\"_blank\">Chrome Store</a>").appendTo(".TFMPL_INFO");
 			$("<div/>").addClass("links").html("coder: <a href=\"http://twitter.com/gilbarbara\" target=\"_blank\">Gil Barbara</a>").appendTo(".TFMPL_INFO");
-			$("<div/>").addClass("links").html("<form action=\"https://www.paypal.com/cgi-bin/webscr\" method=\"post\"><input type=\"hidden\" name=\"cmd\" value=\"_s-xclick\"><input type=\"hidden\" name=\"hosted_button_id\" value=\"ND37ZV8Z36WUE\"><input type=\"image\" src=\"https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif\" border=\"0\" name=\"submit\" alt=\"PayPal - The safer, easier way to pay online!\"><img alt=\"\" border=\"0\" src=\"https://www.paypalobjects.com/pt_BR/i/scr/pixel.gif\" width=\"1\" height=\"1\"></form>").appendTo(".TFMPL_INFO");
+			$("<div/>").addClass("links").html("<br/><a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZDRN38DYEALZ6\" target=\"_blank\"><img src=\"https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif\" border=\"0\"/></a>").appendTo(".TFMPL_INFO");
 			
 			
 			$(".TFMPL_INFO").slideDown(800, "easeOutBounce");
@@ -739,21 +739,25 @@ $("#TFMPL a.icon").live("click", function(e) {
 
 $("#TFMPL a.new").live("click", function(e) {
 	e.preventDefault();
+	if ($("#TFMPL .TFMPL_PLAYLISTS:visible").length) $("#TFMPL .dropdown dt .title").trigger("click");
 	TFMPL.ui.create();
 });
 
 $("#TFMPL a.settings").live("click", function(e) {
 	e.preventDefault();
+	if ($("#TFMPL .TFMPL_PLAYLISTS:visible").length) $("#TFMPL .dropdown dt .title").trigger("click");
 	TFMPL.ui.settings();
 });
 
 $("#TFMPL a.info").live("click", function(e) {
 	e.preventDefault();
+	if ($("#TFMPL .TFMPL_PLAYLISTS:visible").length) $("#TFMPL .dropdown dt .title").trigger("click");
 	TFMPL.ui.info();
 });
 
 $("#TFMPL a.help").live("click", function(e) {
 	e.preventDefault();
+	if ($("#TFMPL .TFMPL_PLAYLISTS:visible").length) $("#TFMPL .dropdown dt .title").trigger("click");
 	TFMPL.ui.help();
 });
 
@@ -806,7 +810,7 @@ $("#TFMPL .TFMPL .remove").live("click", function() {
 
 $("#TFMPL dt .sort").live("click", function(e) {
     e.stopPropagation();
-	if (!$(".TFMPL .song").length) TFMPL.ui.load($("#TFMPL dt".data("playlist")));
+	if (!$(".TFMPL .song").length) TFMPL.ui.load($("#TFMPL dt").data("playlist"));
 	$("#TFMPL #sort_menu").slideToggle();
 });
 
