@@ -2,4 +2,6 @@ An extension to add a playlist manager to turntable.fm (now with sorting!)
 
 This is just the source code, if you want to install the Chrome Extension, it's available here for free: https://chrome.google.com/webstore/detail/cdnlbccgfdekbgjiahbclfhglckdhgcc
 
-Thanks for MarkReeder (https://github.com/MarkReeder) and Justin Day(https://github.com/potatono) for inspiration.
+Thanks for:
+Justin Day (https://github.com/potatono) for inspiration.
+Miles Lightwood of TeamTeamUSA (https://github.com/TeamTeamUSA) for sorting implementation.
