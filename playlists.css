@@ -282,12 +282,14 @@
 	}
 	
 	#TFMPL #sort_menu {
-		background-color: #797979;
+		background-color: rgba(121, 121, 121, 0.85);
 		border-top: 1px solid #FFF;
 		display: none;
 		left: 0;
+		padding-top: 4px;
 		position: absolute;
-		top: 54px; }
+		top: 54px;
+		z-index: 2; }
 		
 		#TFMPL #sort_menu div {
 			background: transparent url('chrome-extension://lfohcpiljjfpecdjjhobbcpgpapngike/images/sort-asc.png') no-repeat center right;
@@ -348,7 +350,7 @@
 			background: #797979 url('chrome-extension://lfohcpiljjfpecdjjhobbcpgpapngike/images/icon-sort.png') no-repeat center center;
 			border-right: 1px solid #FFF;
 			height: 29px;
-			width: 24px; }
+			width: 0; }
 			
 			#TFMPL .dropdown dt .sort:hover {
 				background-color: #FABA43; }

@@ -167,6 +167,7 @@ TFMPL.ui = {
 						} else {
 							$(this).effect('highlight',{ color: "#FF0000" }, 1000);
 						}
+						if ($("#TFMPL dt .sort").width() == 0) $("#TFMPL dt .sort").animate({ width: 24 });
 					}
 				}).
 				sortable({
@@ -230,6 +231,7 @@ TFMPL.ui = {
 				}
 				var title = (TFMPL.playlists[playlist].name.length > 19 ? TFMPL.playlists[playlist].name.substring(0,18) + "..." : TFMPL.playlists[playlist].name)
 				$("#TFMPL dt").html("<span class=\"sort\"></span><span class=\"title\">" + title + " (" + TFMPL.playlists[playlist].songs.length + ")</span>");
+				if (TFMPL.playlists[playlist].songs.length) $("#TFMPL dt .sort").addClass("visible").animate({ width: 24 });
 				$(".TFMPL .song").removeClass("nth-child-even").filter(":even").addClass("nth-child-even");
 				$("#TFMPL .TFMPL").sortable("option", "disabled", false);
 			}
@@ -251,7 +253,6 @@ TFMPL.ui = {
 	},
 	sortPlaylist: function(attribute, orderRel) {
 		TFMPL.log("ui.sortPlaylist");
-		console.log(attribute, orderRel);
 		$(".TFMPL .song").tsort('',{ data: "songData", dataObj: "metadata", dataProperty: attribute, order: orderRel });
 		$(".TFMPL .song").removeClass("nth-child-even").filter(":even").addClass("nth-child-even");
 		return true;
@@ -260,7 +261,8 @@ TFMPL.ui = {
 		TFMPL.log("ui.menu");
 		
 		$menu = $("<dl/>").attr({ id: "TFMPL_MENU" }).addClass("dropdown");
-		$menu.append("<dt>" + (selected ? TFMPL.playlists[selected].name : "Playlists") + "</dt>");
+		var title = (selected ? (TFMPL.playlists[selected].name.length > 19 ? TFMPL.playlists[selected].name.substring(0,18) + "..." : TFMPL.playlists[selected].name) : '');
+		$menu.append("<dt data-playlist=\"" + selected + "\"><span class=\"sort\"></span><span class=\"title\">" + (selected ? title : "Playlists") + "</span></dt>");
 		
 		var loop = "<div class=\"TFMPL_WRAPPER\"><div class=\"TFMPL_PLAYLISTS\"><ul>";
 		for(var i in TFMPL.playlists) {
@@ -296,11 +298,11 @@ TFMPL.ui = {
 			$("<div/>").addClass("version").html("version: " + TFMPL.version).appendTo(".TFMPL_INFO");
 			$("<div/>").addClass("links").html("site: <a href=\"https://chrome.google.com/webstore/detail/eimhdmlhdgmboegnmecdnfbmdmhdoool\" target=\"_blank\">Chrome Store</a>").appendTo(".TFMPL_INFO");
 			$("<div/>").addClass("links").html("coder: <a href=\"http://twitter.com/gilbarbara\" target=\"_blank\">Gil Barbara</a>").appendTo(".TFMPL_INFO");
+			$("<div/>").addClass("links").html("<form action=\"https://www.paypal.com/cgi-bin/webscr\" method=\"post\"><input type=\"hidden\" name=\"cmd\" value=\"_s-xclick\"><input type=\"hidden\" name=\"hosted_button_id\" value=\"ND37ZV8Z36WUE\"><input type=\"image\" src=\"https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif\" border=\"0\" name=\"submit\" alt=\"PayPal - The safer, easier way to pay online!\"><img alt=\"\" border=\"0\" src=\"https://www.paypalobjects.com/pt_BR/i/scr/pixel.gif\" width=\"1\" height=\"1\"></form>").appendTo(".TFMPL_INFO");
 			
 			
 			$(".TFMPL_INFO").slideDown(800, "easeOutBounce");
 		}
-
 	},
 	settings: function(selected) {
 		TFMPL.log("ui.settings");
@@ -769,11 +771,11 @@ $("#TFMPL .dropdown dt .title").live("mouseover", function() {
 }).live("click", function(e) {
 	e.preventDefault();
 	if (!$("#TFMPL .TFMPL_PLAYLISTS:visible").length) {
-	    $("#TFMPL dt .sort").animate({ width: 0 });
+	    if ($("#TFMPL dt .sort").hasClass("visible")) $("#TFMPL dt .sort").animate({ width: 0 });
 		$("#TFMPL #sort_menu").fadeOut();
 		$(this).closest(".dropdown").find("dd .TFMPL_WRAPPER").animate({ height: "toggle" }, 800, "easeOutBounce");
 	} else {
-    	$("#TFMPL dt .sort").animate({ width: 24 });
+    	if ($("#TFMPL dt .sort").hasClass("visible")) $("#TFMPL dt .sort").animate({ width: 24 });
 		$(this).closest(".dropdown").find("dd .TFMPL_WRAPPER").animate({ height: "toggle" });
 	}
 	$(this).promise().done(function() {
@@ -788,7 +790,8 @@ $("#TFMPL .dropdown dd ul li").live("click", function(e) {
 	var playlist = $this.data("playlist");
 	
 	if (playlist){
-		$this.closest(".dropdown").find("dt .title").html($this.text()).end().find("dd .TFMPL_WRAPPER").hide();
+		if (TFMPL.playlists[playlist].songs.length) $("#TFMPL dt .sort").animate({ width: 24 });
+		$this.closest(".dropdown").find("dt").data("playlist", $this.data("playlist")).end().find("dt .title").html($this.text()).end().find("dd .TFMPL_WRAPPER").hide();
 		TFMPL.ui.load(playlist);
 	}
 });
@@ -803,6 +806,7 @@ $("#TFMPL .TFMPL .remove").live("click", function() {
 
 $("#TFMPL dt .sort").live("click", function(e) {
     e.stopPropagation();
+	if (!$(".TFMPL .song").length) TFMPL.ui.load($("#TFMPL dt".data("playlist")));
 	$("#TFMPL #sort_menu").slideToggle();
 });
 
