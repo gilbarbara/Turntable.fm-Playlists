@@ -280,6 +280,40 @@
 		overflow: hidden;
 		width: 219px;
 	}
+	
+	#TFMPL #sort_menu {
+		background-color: #797979;
+		border-top: 1px solid #FFF;
+		display: none;
+		left: 0;
+		position: absolute;
+		top: 54px; }
+		
+		#TFMPL #sort_menu div {
+			background: transparent url('chrome-extension://lfohcpiljjfpecdjjhobbcpgpapngike/images/sort-asc.png') no-repeat center right;
+			color: #FFF;
+			cursor: pointer;
+			font-size: 13px;
+			margin-right: 6px;
+			padding: 3px 15px 3px 6px; }
+			
+			#TFMPL #sort_menu div.selected {
+				font-weight: bold; }
+			
+			#TFMPL #sort_menu div.desc {
+				background: transparent url('chrome-extension://lfohcpiljjfpecdjjhobbcpgpapngike/images/sort-desc.png') no-repeat center right; }
+			
+			#TFMPL #sort_menu button {
+				-moz-border-radius: 1px;
+				-webkit-border-radius: 1px;
+				background-color: #FABA43;
+				border: none;
+				color: #FFF;
+				cursor: pointer;
+				font-size: 12px;
+				margin: 8px 6px 8px 6px;
+				padding: 1px 4px;
+				width: 88%; }
 
 	#TFMPL dl.dropdown {
 		background-color: #797979;
@@ -295,7 +329,7 @@
 		background: url('chrome-extension://lfohcpiljjfpecdjjhobbcpgpapngike/images/dropdown.png') no-repeat scroll 210px center;
 		color: #FFF;
 		display: block;
-		font-size: 15px;
+		
 		height: 29px; }
 		
 		#TFMPL .dropdown dt * {
@@ -305,6 +339,8 @@
 		#TFMPL .dropdown dt.selected { background-color: #FABA43; }
 		
 		#TFMPL .dropdown dt .title {
+			font-size: 15px;
+			height: 17px;
 			padding: 6px 22px 6px 6px;
 			width: 180px; }
 		

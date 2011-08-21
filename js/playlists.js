@@ -3,7 +3,22 @@
  * https://github.com/gilbarbara/Turntable.fm-Playlists
  * https://chrome.google.com/webstore/detail/eimhdmlhdgmboegnmecdnfbmdmhdoool
  *
- * 2011 * Gil Barbara
+ * Date: 2011-06-24
+ * Version: 0.954
+ * Author: Gil Barbara <gilbarbara@gmail.com>
+ * Copyright (C): 2011
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the Attribution Non-Commercial Share Alike
+ *  (cc by-nc-sa) License as published by the Creative Commons Corporation;
+ *  either version 3 of the License, or (at your option) any later version.
+ *  
+ *  See http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode for details.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *  
  *
  * Playlist sorting hacked by Miles Lightwood of TeamTeamUSA m@teamteamusa.com (aka Steppin' Lazor of Great Minds Crew)
  * TODO:
@@ -168,6 +183,8 @@ TFMPL.ui = {
 				$("#TFMPL").draggable({
 					handle: ".black-right-header"
 				});
+				
+				$("<div/>").attr("id", "sort_menu").html("<div data-sort=\"song\" data-order=\"asc\">sort by title</div><div data-sort=\"artist\" data-order=\"asc\">sort by artist</div><div data-sort=\"length\" data-order=\"asc\">sort by length</div><button>save</button>").appendTo("#TFMPL");
 		}
 		
 		if (TFMPL.user.indicator) {
@@ -211,7 +228,8 @@ TFMPL.ui = {
 				for(var i in songs) {
 					$(".realPlaylist .song:data('songData.fileId="+ songs[i] +"')").clone(true).addSong().appendTo(".TFMPL");
 				}
-				$("#TFMPL dt").html("<span class=\"sort\" data-sort=\"asc\"></span><span class=\"title\">" + TFMPL.playlists[playlist].name + " (" + TFMPL.playlists[playlist].songs.length + ")</span>");
+				var title = (TFMPL.playlists[playlist].name.length > 19 ? TFMPL.playlists[playlist].name.substring(0,18) + "..." : TFMPL.playlists[playlist].name)
+				$("#TFMPL dt").html("<span class=\"sort\"></span><span class=\"title\">" + title + " (" + TFMPL.playlists[playlist].songs.length + ")</span>");
 				$(".TFMPL .song").removeClass("nth-child-even").filter(":even").addClass("nth-child-even");
 				$("#TFMPL .TFMPL").sortable("option", "disabled", false);
 			}
@@ -231,11 +249,10 @@ TFMPL.ui = {
 			this.create();
 		}
 	},
-	sortPlaylist: function(attribute) {
+	sortPlaylist: function(attribute, orderRel) {
 		TFMPL.log("ui.sortPlaylist");
-		so = $("#TFMPL dt .sort").data("sort");
-		$("#TFMPL dt .sort").data("sort", ($("#TFMPL dt .sort").data("sort") == "asc" ? "desc" : "asc"));
-		$(".TFMPL .song").tsort('',{ order: so });
+		console.log(attribute, orderRel);
+		$(".TFMPL .song").tsort('',{ data: "songData", dataObj: "metadata", dataProperty: attribute, order: orderRel });
 		$(".TFMPL .song").removeClass("nth-child-even").filter(":even").addClass("nth-child-even");
 		return true;
 	},
@@ -752,11 +769,11 @@ $("#TFMPL .dropdown dt .title").live("mouseover", function() {
 }).live("click", function(e) {
 	e.preventDefault();
 	if (!$("#TFMPL .TFMPL_PLAYLISTS:visible").length) {
-	    $("#TFMPL dt .sort").animate({ width: "toogle" });
-		$("#TFMPL dt .sort_menu").hide();
+	    $("#TFMPL dt .sort").animate({ width: 0 });
+		$("#TFMPL #sort_menu").fadeOut();
 		$(this).closest(".dropdown").find("dd .TFMPL_WRAPPER").animate({ height: "toggle" }, 800, "easeOutBounce");
 	} else {
-    	$("#TFMPL dt .sort").animate({ width: "toogle" });
+    	$("#TFMPL dt .sort").animate({ width: 24 });
 		$(this).closest(".dropdown").find("dd .TFMPL_WRAPPER").animate({ height: "toggle" });
 	}
 	$(this).promise().done(function() {
@@ -785,10 +802,34 @@ $("#TFMPL .TFMPL .remove").live("click", function() {
 });
 
 $("#TFMPL dt .sort").live("click", function(e) {
-    e.preventDefault();
+    e.stopPropagation();
+	$("#TFMPL #sort_menu").slideToggle();
+});
+
+$('#TFMPL #sort_menu').live("click", function(e){
+	e.stopPropagation();
+});
+
+$("#TFMPL").live("click", function() {
+	if($("#TFMPL #sort_menu:visible")) $("#TFMPL #sort_menu").slideUp();
+});
+
+$("#TFMPL #sort_menu div").live("click", function() {
 	$("#TFMPL .TFMPL").sortable("option", "disabled", true);
-	TFMPL.ui.sortPlaylist('');
-	//TFMPL.playlist.update();
+	
+	if($(this).data("order") == "desc") $(this).addClass("desc");
+	else $(this).removeClass("desc");
+	
+	$(this).addClass("selected").siblings("div").removeClass("selected");
+	TFMPL.ui.sortPlaylist($(this).data("sort"), $(this).data("order"));
+	
+	$(this).data("order", ($(this).data("order") == "asc" ? "desc" : "asc"));
+});
+
+$("#TFMPL #sort_menu button").live("click", function() {
+	TFMPL.playlist.update();
+	$("#TFMPL #sort_menu").slideUp();
+	$("#TFMPL .TFMPL").sortable("option", "disabled", false);
 });
 
 /* New Playlist
@@ -1040,9 +1081,16 @@ jQuery.cookie = function (key, value, options) {
 
 /*
 * jQuery TinySort - A plugin to sort child nodes by (sub) contents or attributes.
-* Version: 1.0.5
+*
+* Version: 1.1.0
+*
+* Copyright (c) 2008-2011 Ron Valstar http://www.sjeiti.com/
+*
+* Dual licensed under the MIT and GPL licenses:
+*   http://www.opensource.org/licenses/mit-license.php
+*   http://www.gnu.org/licenses/gpl.html
 */
-(function(b){b.tinysort={id:"TinySort",version:"1.0.5",copyright:"Copyright (c) 2008-2011 Ron Valstar",uri:"http://tinysort.sjeiti.com/",defaults:{order:"asc",attr:"",place:"start",returns:false,useVal:false}};b.fn.extend({tinysort:function(h,j){if(h&&typeof(h)!="string"){j=h;h=null}var e=b.extend({},b.tinysort.defaults,j);var p={};this.each(function(t){var v=(!h||h=="")?b(this):b(this).find(h);var u=e.order=="rand"?""+Math.random():(e.attr==""?(e.useVal?v.val():v.text()):v.attr(e.attr));var s=b(this).parent();if(!p[s]){p[s]={s:[],n:[]}}if(v.length>0){p[s].s.push({s:u,e:b(this),n:t})}else{p[s].n.push({e:b(this),n:t})}});for(var g in p){var d=p[g];d.s.sort(function k(t,s){var i=t.s.toLowerCase?t.s.toLowerCase():t.s;var u=s.s.toLowerCase?s.s.toLowerCase():s.s;if(c(t.s)&&c(s.s)){i=parseFloat(t.s);u=parseFloat(s.s)}return(e.order=="asc"?1:-1)*(i<u?-1:(i>u?1:0))})}var m=[];for(var g in p){var d=p[g];var n=[];var f=b(this).length;switch(e.place){case"first":b.each(d.s,function(s,t){f=Math.min(f,t.n)});break;case"org":b.each(d.s,function(s,t){n.push(t.n)});break;case"end":f=d.n.length;break;default:f=0}var q=[0,0];for(var l=0;l<b(this).length;l++){var o=l>=f&&l<f+d.s.length;if(a(n,l)){o=true}var r=(o?d.s:d.n)[q[o?0:1]].e;r.parent().append(r);if(o||!e.returns){m.push(r.get(0))}q[o?0:1]++}}return this.pushStack(m)}});function c(e){var d=/^\s*?[\+-]?(\d*\.?\d*?)\s*?$/.exec(e);return d&&d.length>0?d[1]:false}function a(e,f){var d=false;b.each(e,function(h,g){if(!d){d=g==f}});return d}b.fn.TinySort=b.fn.Tinysort=b.fn.tsort=b.fn.tinysort})(jQuery);
+(function(b){b.tinysort={id:"TinySort",version:"1.1.0",copyright:"Copyright (c) 2008-2011 Ron Valstar",uri:"http://tinysort.sjeiti.com/",defaults:{order:"asc",attr:null,useVal:false,data:null,dataObj:null,dataProperty:null,place:"start",returns:false,cases:false,sortFunction:null}};b.fn.extend({tinysort:function(h,d){if(h&&typeof(h)!="string"){d=h;h=null}var j=b.extend({},b.tinysort.defaults,d);if(!j.sortFunction){j.sortFunction=j.order=="rand"?function(){return Math.random()<0.5?1:-1}:function(z,w){var i=!j.cases&&z.s&&z.s.toLowerCase?z.s.toLowerCase():z.s;var A=!j.cases&&w.s&&w.s.toLowerCase?w.s.toLowerCase():w.s;if(c(z.s)&&c(w.s)){i=parseFloat(z.s);A=parseFloat(w.s)}return(j.order=="asc"?1:-1)*(i<A?-1:(i>A?1:0))}}var u={};var l=!(!h||h=="");var m=!(j.attr===null||j.attr=="");var q=j.data!==null;var e=l&&h[0]==":";var f=e?this.filter(h):this;this.each(function(x){var y=b(this);var A=l?(e?f.filter(this):y.find(h)):y;var z=q?A.data(j.data)[j.dataObj][j.dataProperty]:(m?A.attr(j.attr):(j.useVal?A.val():A.text()));var w=y.parent();if(!u[w]){u[w]={s:[],n:[]}}if(A.length>0){u[w].s.push({s:z,e:y,n:x})}else{u[w].n.push({e:y,n:x})}});for(var n in u){var r=u[n];r.s.sort(j.sortFunction)}var g=[];for(var n in u){var r=u[n];var s=[];var v=b(this).length;switch(j.place){case"first":b.each(r.s,function(w,x){v=Math.min(v,x.n)});break;case"org":b.each(r.s,function(w,x){s.push(x.n)});break;case"end":v=r.n.length;break;default:v=0}var p=[0,0];for(var t=0;t<b(this).length;t++){var k=t>=v&&t<v+r.s.length;if(a(s,t)){k=true}var o=(k?r.s:r.n)[p[k?0:1]].e;o.parent().append(o);if(k||!j.returns){g.push(o.get(0))}p[k?0:1]++}}return this.pushStack(g)}});function c(e){var d=/^\s*?[\+-]?(\d*\.?\d*?)\s*?$/.exec(e);return d&&d.length>0?d[1]:false}function a(e,f){var d=false;b.each(e,function(h,g){if(!d){d=g==f}});return d}b.fn.TinySort=b.fn.Tinysort=b.fn.tsort=b.fn.tinysort})(jQuery);
 
 /*! Copyright (c) 2010 Brandon Aaron (http://brandonaaron.net)
  * Licensed under the MIT License (LICENSE.txt).
