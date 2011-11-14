@@ -1,5 +1,5 @@
 /*
- local: lfohcpiljjfpecdjjhobbcpgpapngike
+ local: cfmdfakjgeanmjngjhfjemopjhjbpfea
  online: eimhdmlhdgmboegnmecdnfbmdmhdoool
  
 */
@@ -13,7 +13,7 @@
 	position: absolute;
 	top: 99px;
 	width: 233px;
-	z-index: 1001; }
+	z-index: 2; }
  
 	#TFMPL .black-right-header {
 		cursor: move;
@@ -289,7 +289,7 @@
 		padding-top: 4px;
 		position: absolute;
 		top: 54px;
-		z-index: 2; }
+		z-index: 3; }
 		
 		#TFMPL #sort_menu div {
 			background: transparent url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/sort-asc.png') no-repeat center right;
