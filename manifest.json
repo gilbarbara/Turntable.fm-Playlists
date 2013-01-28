@@ -1,15 +1,51 @@
 {
 	"name": "Turntable.fm Playlist Manager",
-	"version": "0.97",
+	"version": "0.990",
+	"manifest_version": 2,
 	"description": "Add custom playlists to turntable.fm!",
-	"background_page": "background.html",
+	"background": {
+		"page": "background.html"
+	},
 	"content_scripts": [
 		{
 		"matches": ["http://turntable.fm/*"],
 		"css": ["playlists.css"],
-		"js": ["js/jquery-1.6.2.min.js", "js/jquery-ui-1.8.14.min.js", "js/inject.js"]
+		"js": ["js/jquery.min.js", "js/jquery-ui.min.js", "js/inject.js"]
 		}
 	],
+	"web_accessible_resources": [
+		"js/playlists.js",
+	       "images/add_sprite.png",
+		"images/ajax.gif",
+		"images/drag.png",
+		"images/dropbox_connect.png",
+		"images/dropbox_new.png",
+		"images/dropbox_synced.png",
+		"images/dropbox_works.png",
+		"images/dropbox.png",
+		"images/dropdown.png",
+		"images/error.png",
+		"images/go-top.png",
+		"images/help.png",
+		"images/icon-16.png",
+		"images/icon-48.png",
+		"images/icon-128.png",
+		"images/icon-delete.png",
+		"images/icon-help.png",
+		"images/icon-info.png",
+		"images/icon-new.png",
+		"images/icon-settings.png",
+		"images/icon-sort.png",
+		"images/icon-sync.gif",
+		"images/record_icon.png",
+		"images/remove-button.png",
+		"images/sort-asc.png",
+		"images/sort-desc.png",
+		"images/success.png",
+		"images/sync.gif",
+		"images/synced.png",
+		"images/yahoo.png"
+	  ],
 	"permissions": [
 		"tabs",
 		"http://turntable.fm/*"
@@ -17,10 +53,6 @@
 	"icons": { 
 		"16":"images/icon-16.png",
 		"48":"images/icon-48.png",
-		"128":"images/icon-128.png",
-		"new":"images/icon-new.png",
-		"options":"images/icon-options.png",
-		"info":"images/icon-info.png",
-		"help":"images/icon-help.png"
+		"128":"images/icon-128.png"
 	}
 }
