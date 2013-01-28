@@ -2,413 +2,619 @@
  local: cfmdfakjgeanmjngjhfjemopjhjbpfea
  online: eimhdmlhdgmboegnmecdnfbmdmhdoool
  
+ To use the latest version I'm working on, or to test this file before implimenting, 
+ paste this into your Chrome console and it will grab the latest version:
+ 
+ $("<link/>", {rel: "stylesheet",type: "text/css",href: "https://dl.dropbox.com/u/55701302/ttfm_playlist/playlists.css"}).appendTo("head");
+ -- Psykoral
 */
 
 #TFMPL {
-	-moz-box-shadow: 0 0 8px 2px #333;
-	-webkit-box-shadow: 0 0 8px 2px #333;
-	background-color: #F7F7F7;
-	color: #555;
-	font-size: 1em;
-	position: absolute;
-	top: 99px;
-	width: 233px;
-	z-index: 2; }
- 
-	#TFMPL .black-right-header {
-		cursor: move;
-		display: block;
-		position: relative; }
- 
-		#TFMPL .black-right-header a {
-			cursor: pointer;
-			display: block;
-			height: 12px;
-			position: absolute;
-			top: 6px;
-			width: 12px; }
- 
-		#TFMPL .black-right-header .icon {
-			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-16.png') no-repeat;
-			height: 16px;
-			left: 8px;
-			top: 4px;
-			width: 16px; }
-			
-			#TFMPL .black-right-header .icon.syncing {
-				background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-sync.gif') no-repeat; }
- 
-		#TFMPL .black-right-header .new {
-			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-new.png') no-repeat;
-			height: 16px;
-			right: 64px;
-			top: 4px;
-			width: 16px; }
- 
-		#TFMPL .black-right-header .settings {
-			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-settings.png') no-repeat;
-			right: 40px; }
- 
-		#TFMPL .black-right-header .info {
-			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-info.png') no-repeat;
-			right: 24px; }
- 
-		#TFMPL .black-right-header .help {
-			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-help.png') no-repeat;
-			right: 8px; }
- 
-	#TFMPL .TFMPL, #TFMPL .TFMPL_SETTINGS, #TFMPL .TFMPL_INFO {
-		height: 547px;
-		overflow-x: hidden;
-		overflow-y: visible; }
- 
-		#TFMPL .TFMPL .song { width: 218px; }	
- 
-	#TFMPL .TFMPL_NEW, #TFMPL .TFMPL_EMPTY, #TFMPL .TFMPL_SETTINGS, #TFMPL .TFMPL_INFO, #TFMPL .TFMPL_HELP {
-		background-color: #FFE4A1;
-		display: none;
-		left: 0;
-		position: absolute;
-		top: 55px;
-		width: 233px; }
-		
-	#TFMPL .TFMPL_HELP { height: 577px; }
-		
-	#TFMPL .TFMPL_NEW {
-		padding: 36px 24px;
-		width: 185px; }
- 
-		#TFMPL .TFMPL_NEW div {
-			font-size: 16px;
-			font-weight: bold;
-			margin-bottom: 6px; }
-	 
-		#TFMPL .TFMPL_NEW input {
-			font-size: 14px;
-			padding: 2px 4px;
-			width: 174px; }
-	 
-		#TFMPL .TFMPL_NEW span {
-			color: #DA8B00;
-			cursor: pointer;
-			display: block;
-			font-size: 10px;
-			margin-top: 4px;
-			text-align: right; }
-			
-	#TFMPL .TFMPL_INFO {
-		-webkit-background-size: 96px;
-		background: #FFE4A1 url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-128.png') no-repeat 50% 400px;
-		background-size: 96px; }
-	
-	#TFMPL .TFMPL_INFO .subtitle {
-		font-size: 32px;
-		font-weight: bold;
-		padding: 12px 0;
-		text-align: center; }
-		
-	#TFMPL .TFMPL_INFO .block {
-		-moz-border-radius: 6px;
-		-webkit-border-radius: 6px;
-		border: none;
-		background-color: #FABA43;
-		display: inline-block;
-		margin: 0 0 17px 17px;
-		padding: 12px;
-		width: 68px; }
-		
-		#TFMPL .TFMPL_INFO .block .number {
-			font-size: 32px;
-			font-weight: bold;
-			margin-bottom: 2px;
-			text-align: center; }
-		
-		#TFMPL .TFMPL_INFO .block .text {
-			font-size: 11px;
-			text-align: center; }
-			
-	#TFMPL .TFMPL_INFO .installed, #TFMPL .TFMPL_INFO .version, #TFMPL .TFMPL_INFO .links {
-		font-size: 11px;
-		margin: 0 0 4px 17px; }
-		
-		#TFMPL .TFMPL_INFO a { color: #000; }
-			
-	#TFMPL .TFMPL_SETTINGS {
-		padding: 16px;
-		width: 201px; }
-		
-		#TFMPL .TFMPL_SETTINGS .title {
-			font-size: 18px;
-			font-weight: bold;
-			margin-bottom: 16px; }
-		
-		#TFMPL .TFMPL_SETTINGS .subtitle {
-			margin-bottom: 8px; }
-			
-			#TFMPL .TFMPL_SETTINGS .subtitle a {
-				color: #555;
-				font-size: 15px;
-				font-weight: bold;
-				text-decoration: none; }
-		
-		#TFMPL .TFMPL_SETTINGS .indicator {
-			font-size: 12px; }
-			
-			#TFMPL .TFMPL_SETTINGS .indicator input {
-				vertical-align: middle;
-				margin-right: 4px; }
-		
-		
-		#TFMPL .TFMPL_SETTINGS .fields {
-			height: 375px;
-			margin-bottom: 4px;
-			opacity: 0;
-			overflow: hidden; }
-		
-		#TFMPL .TFMPL_SETTINGS .field {
-			margin-bottom: 2px;
-			text-align: right; }
-		
-		#TFMPL .TFMPL_SETTINGS .field a {
-			background: transparent url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-delete.png') no-repeat 0 0;
-			display: inline-block;
-			height: 16px;
-			margin-left: 4px;
-			vertical-align: middle;
-			width: 16px; }
-			
-		#TFMPL .TFMPL_SETTINGS button {
-			-moz-border-radius: 2px;
-			-webkit-border-radius: 2px;
-			background-color: transparent;
-			border: none;
-			color: #FF0000;
-			cursor: pointer;
-			display: none;
-			font-size: 12px;
-			margin: 3px 0;
-			padding: 1px 4px; }
-			
-		#TFMPL .TFMPL_SETTINGS .field input {
-			background-color: #FDEBB7;
-			border: none;
-			border-bottom: 1px solid #FABA43;
-			color: #000;
-			outline: none;
-			padding: 4px 6px;
-			margin: 0;
-			width: 154px; }
-			
-		#TFMPL .TFMPL_SETTINGS .tip {
-			font-size: 13px;
-			font-style: italic;
-			margin-bottom: 16px; }
-			
-		#TFMPL .TFMPL_SETTINGS .dropbox, #TFMPL .TFMPL_SETTINGS .dropbox.on {
-			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/dropbox_synced.png') no-repeat 0 0;
-			cursor: pointer;
-			height: 33px;
-			margin: 8px 0;
-			width: 194px; }
-			
-			#TFMPL .TFMPL_SETTINGS .dropbox.off {
-			background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/dropbox_connect.png') no-repeat 0 0; }
-			
-			#TFMPL .TFMPL_SETTINGS .dropbox_unlink {
-				margin: 4px 0;
-				text-align: right;
-				width: 194px; }
-				
-				#TFMPL .TFMPL_SETTINGS .dropbox_unlink a {
-					color: #CC3333;
-					text-decoration: none; }
-					
-				#TFMPL .TFMPL_SETTINGS .dropbox_unlink button {
-					margin: 0;
-					padding: 0 4px; }
-				
-				#TFMPL .TFMPL_SETTINGS .dropbox_unlink.off { display: none; }
-			
-		#TFMPL .TFMPL_SETTINGS .backup_restore {
-			font-size: 13px;
-			display: none; }
-		
-		#TFMPL .TFMPL_SETTINGS .backup_restore textarea {
-			height: 60px;
-			width: 201px; }
-			
-		#TFMPL .TFMPL_SETTINGS #dropbox {
-			background: url("chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/ajax.gif") no-repeat 0 0;
-			display: none;
-			height: 16px;
-			margin-top: 6px;
-			padding-left: 20px;
-		}
-		
-		#TFMPL .TFMPL_SETTINGS #dropbox.syncing {
-			background: url("chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/sync.gif") no-repeat 0 0; }
-		
-		#TFMPL .TFMPL_SETTINGS #dropbox.success {
-			background: url("chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/success.png") no-repeat 0 0; }
-			
-		#TFMPL .TFMPL_SETTINGS #dropbox.error {
-			background: url("chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/error.png") no-repeat 0 0; }
- 
-	#TFMPL .TFMPL_HELP {
-		background: #FEE49C url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/help.png') no-repeat;
-		top: 25px; }
-		
-	#TFMPL .TFMPL_EMPTY {
-		background: transparent url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/drag.png') no-repeat;
-		height: 102px;
-		top: 55px;
-		width: 233px; }
- 
-	#TFMPL .TFMPL_MENU {  }
-		
-	#TFMPL .TFMPL_WRAPPER {
-		background-color: #FEE49C;
-		display: none;
-		left: 0;
-		padding: 8px;
-		position: absolute;
-		top: 0; }
-		
-	#TFMPL .TFMPL_PLAYLISTS {
-		color: #333;
-		height: 533px;
-		overflow: hidden;
-		width: 219px;
-	}
-	
-	#TFMPL #sort_menu {
-		background-color: rgba(121, 121, 121, 0.85);
-		border-top: 1px solid #FFF;
-		display: none;
-		left: 0;
-		padding-top: 4px;
-		position: absolute;
-		top: 54px;
-		z-index: 3; }
-		
-		#TFMPL #sort_menu div {
-			background: transparent url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/sort-asc.png') no-repeat center right;
-			color: #FFF;
-			cursor: pointer;
-			font-size: 13px;
-			margin-right: 6px;
-			padding: 3px 15px 3px 6px; }
-			
-			#TFMPL #sort_menu div.selected {
-				font-weight: bold; }
-			
-			#TFMPL #sort_menu div.desc {
-				background: transparent url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/sort-desc.png') no-repeat center right; }
-			
-			#TFMPL #sort_menu button {
-				-moz-border-radius: 1px;
-				-webkit-border-radius: 1px;
-				background-color: #FABA43;
-				border: none;
-				color: #FFF;
-				cursor: pointer;
-				font-size: 12px;
-				margin: 8px 6px 8px 6px;
-				padding: 1px 4px;
-				width: 88%; }
+    -moz-box-shadow: 0 0 8px 2px #333;
+    -webkit-box-shadow: 0 0 8px 2px #333;
+    background-color: #F7F7F7;
+    color: #555;
+    font-size: 1em;
+    position: absolute;
+    top: 61px;
+    left: 13%;
+    width: 256px !important;
+    z-index: 3;
+}
 
-	#TFMPL dl.dropdown {
-		background-color: #797979;
-		display: inline-block;
-		margin: 0;
-		width: 233px; }
- 
-	#TFMPL .dropdown dd, .dropdown dt, .dropdown ul {
-		margin: 0px;
-		padding: 0px; }
- 
-	#TFMPL .dropdown dt {
-		background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/dropdown.png') no-repeat scroll 210px center;
-		color: #FFF;
-		display: block;
-		
-		height: 29px; }
-		
-		#TFMPL .dropdown dt * {
-			display: inline-block;
-			vertical-align: middle; }
- 
-		#TFMPL .dropdown dt.selected { background-color: #FABA43; }
-		
-		#TFMPL .dropdown dt .title {
-			font-size: 15px;
-			height: 17px;
-			padding: 6px 22px 6px 6px;
-			width: 180px; }
-		
-		#TFMPL .dropdown dt .sort {
-			background: #797979 url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-sort.png') no-repeat center center;
-			border-right: 1px solid #FFF;
-			height: 29px;
-			width: 0; }
-			
-			#TFMPL .dropdown dt .sort:hover {
-				background-color: #FABA43; }
-			
-			#TFMPL .dropdown dt .sort.disabled {
-				opacity: 0; }
- 
-	#TFMPL .dropdown dd {
-		position: relative;
-		z-index: 1; }
- 
-		#TFMPL .dropdown dd ul {
-			list-style: none; }
- 
-			#TFMPL .dropdown dd ul li {
-				cursor: pointer;
-				font-size: 15px;
-				padding-bottom: 5px ; }
- 
-				#TFMPL .dropdown dd ul li:hover { background-color: #FABA43; }
-				
-	#TFMPL.playlist-container .song .goTop {
- 		background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/go-top.png') 0 -20px;
-		height: 20px; }
-		
-		#TFMPL.playlist-container .song .goTop:hover {
- 		background-position: 0 0; }
- 	
- 	#TFMPL.playlist-container .queueView .song .remove {
- 		background-image: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/remove-button.png');
-		top: 4px; }
-		
-	#TFMPL .dropboxNew {
-		background-image: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/dropbox_new.png');
-		display: none;
-		height: 133px;
-		left: 0;
-		position: absolute;
-		top: 55px;
-		width: 233px;
-	}
- 
-	#TFMPL .activeClass { background-color: #FFA; }
-	#TFMPL .hoverClass { background-color: #FABA43; }
-	#TFMPL .highlightClass { background-color: #FFF; height: 42px; }
-	
-	#TFMPL .matchesRecentlyPlayedExactly { background-color: #faa; }
-	#TFMPL .matchesRecentlyPlayedArtist { background-color: #ffa; }
-	#TFMPL .matchesRecentlyPlayedSongTitle { background-color: #ffd5aa; }
-	#TFMPL .matchesRecentlyPlayedExactly.topSong { background-color: #FEE8AF; }
-	
-	#TFMPL #response {
-		color: #FF0000;
-		font-weight: bold; }
-		
-	#right-panel .inTFMPL { color: #C0C0C0; font-size: 22px; height: 10px; line-height: 12px; position: absolute; top: 2px; right: 20px; width: 10px;  }
-	
-		
+#TFMPL .black-right-header {
+    cursor: move;
+    display: block;
+    position: relative;
+    padding: 0 0 3px 0;
+}
+
+#TFMPL .black-right-header a {
+    cursor: pointer;
+    display: block;
+    height: 12px;
+    position: absolute;
+    top: 6px;
+    width: 12px;
+}
+
+#TFMPL .black-right-header .header-text {
+    padding: 3px 0 0 30px;
+}
+
+#TFMPL .black-right-header .icon {
+    background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-16.png') no-repeat;
+    height: 16px;
+    left: 8px;
+    top: 4px;
+    width: 16px;
+}
+
+#TFMPL .black-right-header .icon.syncing {
+    background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-sync.gif') no-repeat;
+}
+
+#TFMPL .black-right-header .new {
+    background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-new.png') no-repeat;
+    height: 16px;
+    right: 64px;
+    top: 4px;
+    width: 16px;
+}
+
+#TFMPL .black-right-header .settings {
+    background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-settings.png') no-repeat;
+    right: 40px;
+}
+
+#TFMPL .black-right-header .info {
+    background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-info.png') no-repeat;
+    right: 24px;
+}
+
+#TFMPL .black-right-header .help {
+    background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-help.png') no-repeat;
+    right: 8px;
+}
+
+#TFMPL .TFMPL, #TFMPL .TFMPL_SETTINGS, #TFMPL .TFMPL_INFO {
+    height: 547px;
+    overflow-x: hidden;
+    overflow-y: visible;
+    width: 100% !important;
+    z-index: 1;
+}
+
+#TFMPL .TFMPL .song {
+    width: 100%;
+}
+
+#TFMPL .song, #TFMPL .uploading {
+    background-color: white;
+    border-bottom: 1px solid #E6E6E6;
+    position: relative;
+    height: 50px;
+    width: 100%;
+}
+
+#TFMPL .song .title,
+#TFMPL .song .details {
+    padding: 0 0 0 8px;
+    width: 175px !important;
+}
+
+#TFMPL .song .playSample,
+#TFMPL .song .pauseSample
+{
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    padding: 10px;
+    cursor: pointer;
+    background-image: url(https://s3.amazonaws.com/static.turntable.fm/images/playlist/play-pause-button.png);
+    background-position: 0 0;
+    background-origin: content-box;
+    background-clip: content-box;
+    z-index: 4;
+}
+
+#TFMPL .song:hover .playSample
+{
+    display: block;
+}
+
+#TFMPL .song .playSample:hover,
+#TFMPL .song .pauseSample:hover
+{
+    background-position: -30px 0;
+}
+
+#TFMPL .song.currentPreview .playSample
+{
+    display: none;
+}
+
+#TFMPL .song.currentPreview .pauseSample:hover
+{
+    background-position: -30px 30px;
+}
+
+#TFMPL .TFMPL_NEW, #TFMPL .TFMPL_EMPTY, #TFMPL .TFMPL_SETTINGS, #TFMPL .TFMPL_INFO, #TFMPL .TFMPL_HELP {
+    background-color: #FFE4A1;
+    display: none;
+    left: 0;
+    position: absolute;
+    top: 55px;    
+    z-index: 1;
+}
+
+#TFMPL .TFMPL_SETTINGS
+{
+   width: 224px !important; 
+}
+
+#TFMPL .TFMPL_HELP {
+    height: 577px;
+    width: 256px !important;
+}
+
+#TFMPL .TFMPL_NEW {
+    padding: 36px 24px;
+    height: 474px;
+    width: 208px !important;
+}
+
+#TFMPL .TFMPL_NEW div {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+#TFMPL .TFMPL_NEW input {
+    font-size: 14px;
+    padding: 2px 4px;
+    width: 174px;
+}
+
+#TFMPL .TFMPL_NEW span {
+    color: #DA8B00;
+    cursor: pointer;
+    display: block;
+    font-size: 10px;
+    margin-top: 4px;
+    text-align: right;
+}
+
+#TFMPL .TFMPL_INFO {
+    -webkit-background-size: 96px;
+    background: #FFE4A1 url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-128.png') no-repeat 50% 400px;
+    background-size: 96px;
+    width: 256px !important;
+}
+
+#TFMPL .TFMPL_INFO .subtitle {
+    font-size: 32px;
+    font-weight: bold;
+    padding: 12px 0;
+    text-align: center;
+}
+
+#TFMPL .TFMPL_INFO .block {
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border: none;
+    background-color: #FABA43;
+    display: inline-block;
+    margin: 0 0 17px 24px;
+    padding: 12px;
+    width: 68px;
+}
+
+#TFMPL .TFMPL_INFO .block .number {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 2px;
+    text-align: center;
+}
+
+#TFMPL .TFMPL_INFO .block .text {
+    font-size: 11px;
+    text-align: center;
+}
+
+#TFMPL .TFMPL_INFO .installed, #TFMPL .TFMPL_INFO .version, #TFMPL .TFMPL_INFO .links {
+    font-size: 11px;
+    margin: 0 0 4px 24px;
+}
+
+#TFMPL .TFMPL_INFO a {
+    color: #000;
+}
+
+#TFMPL .TFMPL_SETTINGS {
+    padding: 16px 26px;
+    width: 204px !important;
+    z-index: 1;
+}
+
+#TFMPL .TFMPL_SETTINGS .title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 16px;
+}
+
+#TFMPL .TFMPL_SETTINGS .subtitle {
+    margin-bottom: 8px;
+}
+
+#TFMPL .TFMPL_SETTINGS .subtitle a {
+    color: #555;
+    font-size: 15px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#TFMPL .TFMPL_SETTINGS .indicator {
+    font-size: 12px;
+}
+
+#TFMPL .TFMPL_SETTINGS .indicator input {
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+#TFMPL .TFMPL_SETTINGS .fields {
+    height: 375px;
+    margin-bottom: 4px;
+    opacity: 0;
+    overflow: hidden;
+}
+
+#TFMPL .TFMPL_SETTINGS .field {
+    margin-bottom: 2px;
+    text-align: right;
+}
+
+#TFMPL .TFMPL_SETTINGS .field a {
+    background: transparent url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-delete.png') no-repeat 0 0;
+    display: inline-block;
+    height: 16px;
+    margin-left: 4px;
+    vertical-align: middle;
+    width: 16px;
+}
+
+#TFMPL .TFMPL_SETTINGS button {
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    background-color: transparent;
+    border: none;
+    color: #FF0000;
+    cursor: pointer;
+    display: none;
+    font-size: 12px;
+    margin: 3px 0;
+    padding: 1px 4px;
+}
+
+#TFMPL .TFMPL_SETTINGS .field input {
+    background-color: #FDEBB7;
+    border: none;
+    border-bottom: 1px solid #FABA43;
+    color: #000;
+    outline: none;
+    padding: 4px 6px;
+    margin: 0;
+    width: 154px;
+}
+
+#TFMPL .TFMPL_SETTINGS .tip {
+    font-size: 13px;
+    font-style: italic;
+    margin-bottom: 16px;
+}
+
+#TFMPL .TFMPL_SETTINGS .dropbox, #TFMPL .TFMPL_SETTINGS .dropbox.on {
+    background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/dropbox_synced.png') no-repeat 0 0;
+    cursor: pointer;
+    height: 33px;
+    margin: 8px 0;
+    width: 194px;
+}
+
+#TFMPL .TFMPL_SETTINGS .dropbox.off {
+    background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/dropbox_connect.png') no-repeat 0 0;
+}
+
+#TFMPL .TFMPL_SETTINGS .dropbox_unlink {
+    margin: 4px 0;
+    text-align: right;
+    width: 194px;
+}
+
+#TFMPL .TFMPL_SETTINGS .dropbox_unlink a {
+    color: #CC3333;
+    text-decoration: none;
+}
+
+#TFMPL .TFMPL_SETTINGS .dropbox_unlink button {
+    margin: 0;
+    padding: 0 4px;
+}
+
+#TFMPL .TFMPL_SETTINGS .dropbox_unlink.off {
+    display: none;
+}
+
+#TFMPL .TFMPL_SETTINGS .backup_restore {
+    font-size: 13px;
+    display: none;
+}
+
+#TFMPL .TFMPL_SETTINGS .backup_restore textarea {
+    height: 60px;
+    width: 201px;
+}
+
+#TFMPL .TFMPL_SETTINGS #dropbox {
+    background: url("chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/ajax.gif") no-repeat 0 0;
+    display: none;
+    height: 16px;
+    margin-top: 6px;
+    padding-left: 20px;
+}
+
+#TFMPL .TFMPL_SETTINGS #dropbox.syncing {
+    background: url("chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/sync.gif") no-repeat 0 0;
+}
+
+#TFMPL .TFMPL_SETTINGS #dropbox.success {
+    background: url("chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/success.png") no-repeat 0 0;
+}
+
+#TFMPL .TFMPL_SETTINGS #dropbox.error {
+    background: url("chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/error.png") no-repeat 0 0;
+}
+
+#TFMPL .TFMPL_HELP {
+    background: #FEE49C url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/help.png') no-repeat 22px 0;
+    top: 25px;
+}
+
+#TFMPL .TFMPL_EMPTY {
+    background: transparent url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/drag.png') no-repeat;
+    height: 102px;
+    top: 55px;
+    width: 233px;
+}
+
+#TFMPL .TFMPL_MENU {
+}
+
+#TFMPL .TFMPL_WRAPPER {
+    background-color: #FEE49C;
+    display: none;
+    left: 0;
+    padding: 8px;
+    position: absolute;
+    top: 0;
+}
+
+#TFMPL .TFMPL_PLAYLISTS {
+    color: #333;
+    height: 533px;
+    overflow: hidden;
+    width: 240px !important;
+}
+
+#TFMPL #sort_menu {
+    background-color: rgba(121, 121, 121, 0.85);
+    border-top: 1px solid #FFF;
+    display: none;
+    left: 0;
+    padding-top: 4px;
+    position: absolute;
+    top: 54px;
+    z-index: 3;
+}
+
+#TFMPL #sort_menu div {
+    background: transparent url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/sort-asc.png') no-repeat center right;
+    color: #FFF;
+    cursor: pointer;
+    font-size: 13px;
+    margin-right: 6px;
+    padding: 3px 15px 3px 6px;
+}
+
+#TFMPL #sort_menu div.selected {
+    font-weight: bold;
+}
+
+#TFMPL #sort_menu div.desc {
+    background: transparent url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/sort-desc.png') no-repeat center right;
+}
+
+#TFMPL #sort_menu button {
+    -moz-border-radius: 1px;
+    -webkit-border-radius: 1px;
+    background-color: #FABA43;
+    border: none;
+    color: #FFF;
+    cursor: pointer;
+    font-size: 12px;
+    margin: 8px 6px 8px 6px;
+    padding: 1px 4px;
+    width: 88%;
+}
+
+#TFMPL dl.dropdown {
+    background-color: #797979;
+    display: inline-block;
+    margin: 0;
+    width: 256px;
+}
+
+#TFMPL .dropdown dd, .dropdown dt, .dropdown ul {
+    margin: 0px;
+    padding: 0px;
+}
+
+#TFMPL .dropdown dt {
+    background: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/dropdown.png') no-repeat scroll 95% center;
+    color: #FFF;
+    display: block;
+    height: auto;
+}
+
+#TFMPL .dropdown dt * {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#TFMPL .dropdown dt.selected {
+    background-color: #FABA43;
+}
+
+#TFMPL .dropdown dt .title {
+    font-size: 15px;
+    height: auto;
+    padding: 6px 28px 6px 6px;
+    width: 100% !important;
+    max-width: 197px;
+}
+
+#TFMPL .dropdown dt .sort {
+    background: #797979 url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/icon-sort.png') no-repeat center center;
+    border-right: 1px solid #FFF;
+    height: 29px;
+    width: 0;
+}
+
+#TFMPL .dropdown dt .sort:hover {
+    background-color: #FABA43;
+}
+
+#TFMPL .dropdown dt .sort.disabled {
+    opacity: 0;
+}
+
+#TFMPL .dropdown dd {
+    position: relative;
+    z-index: 2;
+}
+
+#TFMPL .dropdown dd ul {
+    list-style: none;
+}
+
+#TFMPL .dropdown dd ul li {
+    cursor: pointer;
+    font-size: 15px;
+    padding-bottom: 5px;
+}
+
+#TFMPL .dropdown dd ul li:hover {
+    background-color: #FABA43;
+}
+
+#TFMPL.playlist-container .queueView .song .remove {
+    background: url(https://s3.amazonaws.com/static.turntable.fm/images/playlist/queue-icons.png) 0 -17px;
+    height: 17px;
+    width: 17px;
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    display: none;
+    opacity: .5;
+    z-index: 5;
+}
+
+#TFMPL.playlist-container .queueView .song .goTop {
+    position: absolute;
+    right: 5px;
+    left: initial !important;
+    top: 28px !important;
+    width: 17px;
+    height: 17px;
+    background: url(https://s3.amazonaws.com/static.turntable.fm/images/playlist/queue-icons.png) 0 -34px;
+    cursor: pointer;
+    display: none;
+    opacity: .5;
+    z-index: 5;
+}
+
+#TFMPL.playlist-container .queueView .song .remove:hover,
+#TFMPL.playlist-container .queueView .song .goTop:hover
+{
+    opacity: 1;
+}
+
+#TFMPL.playlist-container .queueView .song:hover .remove,
+#TFMPL.playlist-container .queueView .song:hover .goTop
+{
+    display: block;
+}
+
+#TFMPL .dropboxNew {
+    background-image: url('chrome-extension://eimhdmlhdgmboegnmecdnfbmdmhdoool/images/dropbox_new.png');
+    display: none;
+    height: 133px;
+    left: 0;
+    position: absolute;
+    top: 55px;
+    width: 233px;
+}
+
+#TFMPL .activeClass {
+    background-color: #FFA;
+}
+
+#TFMPL .hoverClass {
+    background-color: #FABA43;
+}
+
+#TFMPL .highlightClass {
+    background-color: #FFF;
+    height: 42px;
+}
+
+#TFMPL .matchesRecentlyPlayedExactly {
+    background-color: #faa;
+}
+
+#TFMPL .matchesRecentlyPlayedArtist {
+    background-color: #ffa;
+}
+
+#TFMPL .matchesRecentlyPlayedSongTitle {
+    background-color: #ffd5aa;
+}
+
+#TFMPL .matchesRecentlyPlayedExactly.topSong {
+    background-color: #FEE8AF;
+}
+
+#TFMPL #response {
+    color: #FF0000;
+    font-weight: bold;
+}
+
+#right-panel .inTFMPL {
+    color: #C0C0C0;
+    font-size: 22px;
+    height: 10px;
+    line-height: 12px;
+    position: absolute;
+    top: 2px;
+    right: 20px;
+    width: 10px;
+}
+
 /*
  * CSS Styles that are needed by jScrollPane for it to operate correctly.
  *
@@ -417,74 +623,97 @@
  */
 
 .jspContainer {
-	overflow: hidden;
-	position: relative; }
+    overflow: hidden;
+    position: relative;
+}
 
-.jspPane { position: absolute; }
+.jspPane {
+    position: absolute;
+}
 
 .jspVerticalBar {
-	position: absolute;
-	top: 0px;
-	right: 0px;
-	width: 10px;
-	height: 100%;
-	background: transparent; }
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 10px;
+    height: 100%;
+    background: transparent;
+}
 
 .jspHorizontalBar {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-	height: 16px;
-	background: red; }
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 16px;
+    background: red;
+}
 
 .jspVerticalBar *, .jspHorizontalBar * {
-	margin: 0;
-	padding: 0; }
+    margin: 0;
+    padding: 0;
+}
 
-.jspCap { display: none; }
+.jspCap {
+    display: none;
+}
 
-.jspHorizontalBar .jspCap { float: left; }
+.jspHorizontalBar .jspCap {
+    float: left;
+}
 
 .jspTrack {
-	background: #444236;
-	position: relative; }
+    background: #444236;
+    position: relative;
+}
 
 .jspDrag {
-	background: #FABA43;
-	position: relative;
-	top: 0;
-	left: 0;
-	cursor: pointer; }
+    background: #FABA43;
+    position: relative;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+}
 
 .jspHorizontalBar .jspTrack,
 .jspHorizontalBar .jspDrag {
-	float: left;
-	height: 100%; }
+    float: left;
+    height: 100%;
+}
 
 .jspArrow {
-	background: #FD9D00;
-	text-indent: -20000px;
-	display: block;
-	cursor: pointer; }
+    background: #FD9D00;
+    text-indent: -20000px;
+    display: block;
+    cursor: pointer;
+}
 
 .jspArrow.jspDisabled {
-	cursor: default;
-	background: #80808d; }
+    cursor: default;
+    background: #80808d;
+}
 
-.jspVerticalBar .jspArrow { height: 16px; }
+.jspVerticalBar .jspArrow {
+    height: 16px;
+}
 
 .jspHorizontalBar .jspArrow {
-	width: 16px;
-	float: left;
-	height: 100%; }
+    width: 16px;
+    float: left;
+    height: 100%;
+}
 
-.jspVerticalBar .jspArrow:focus { outline: none; }
+.jspVerticalBar .jspArrow:focus {
+    outline: none;
+}
 
 .jspCorner {
-	background: #eeeef4;
-	float: left;
-	height: 100%; }
+    background: #eeeef4;
+    float: left;
+    height: 100%;
+}
 
 /* Yuk! CSS Hack for IE6 3 pixel bug :( */
-* html .jspCorner { margin: 0 -3px 0 0; }
+* html .jspCorner {
+    margin: 0 -3px 0 0;
+}
